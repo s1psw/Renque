@@ -34,37 +34,51 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 
 const isPlaying = ref(false)
 const audioRef = ref(null)
+let autoPlayAttempted = false
 
-// 页面加载后尝试自动播放
-onMounted(() => {
+function tryPlay() {
   const audio = audioRef.value
   if (!audio) return
   audio.volume = 0.5
   audio.play().then(() => {
     isPlaying.value = true
   }).catch(() => {
-    // 浏览器阻止自动播放，用户需手动点击
     isPlaying.value = false
   })
+}
+
+// 页面加载后立即尝试
+onMounted(() => {
+  tryPlay()
+  // 如果自动播放被阻止，在用户首次交互时重试
+  if (!isPlaying.value) {
+    autoPlayAttempted = true
+  }
+  document.addEventListener('click', onFirstInteraction, { once: true })
+  document.addEventListener('touchstart', onFirstInteraction, { once: true })
+})
+
+function onFirstInteraction() {
+  if (!isPlaying.value) {
+    tryPlay()
+  }
+}
+
+onUnmounted(() => {
+  document.removeEventListener('click', onFirstInteraction)
+  document.removeEventListener('touchstart', onFirstInteraction)
 })
 
 function togglePlay() {
-  const audio = audioRef.value
-  if (!audio) return
-
   if (isPlaying.value) {
-    audio.pause()
+    audioRef.value?.pause()
     isPlaying.value = false
   } else {
-    audio.play().then(() => {
-      isPlaying.value = true
-    }).catch(() => {
-      isPlaying.value = false
-    })
+    tryPlay()
   }
 }
 </script>
