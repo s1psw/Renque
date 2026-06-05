@@ -21,6 +21,9 @@
 
     <!-- 鼠标拖尾特效 -->
     <MouseTrail />
+
+    <!-- 音乐播放器（旋转唱片） -->
+    <MusicPlayer />
   </div>
 </template>
 
@@ -29,6 +32,7 @@ import NavBar from './components/NavBar.vue'
 import Footer from './components/Footer.vue'
 import BackToTop from './components/BackToTop.vue'
 import MouseTrail from './components/mousemove.vue'
+import MusicPlayer from './components/MusicPlayer.vue'
 </script>
 
 <style scoped>

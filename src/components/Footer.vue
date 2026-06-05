@@ -57,7 +57,7 @@ const currentYear = new Date().getFullYear()
 .footer {
   position: relative;
   padding: 60px 0 30px;
-  background: linear-gradient(180deg, transparent 0%, rgba(15, 12, 41, 0.8) 30%, var(--bg-primary) 100%);
+  background: linear-gradient(180deg, transparent 0%, rgba(255, 240, 245, 0.6) 30%, #fff5f8 100%);
 }
 
 /* 顶部渐变线 */

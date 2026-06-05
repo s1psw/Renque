@@ -79,12 +79,12 @@ onUnmounted(() => {
 
 /* 滚动后：玻璃态背景 */
 .navbar--scrolled {
-  background: rgba(15, 12, 41, 0.75);
+  background: rgba(255, 255, 255, 0.65);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid rgba(255, 182, 193, 0.3);
   padding: 10px 0;
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 30px rgba(255, 150, 180, 0.12);
 }
 
 .navbar__inner {
@@ -142,7 +142,7 @@ onUnmounted(() => {
 
 .navbar__link--active {
   color: #fff !important;
-  background: linear-gradient(135deg, rgba(102, 126, 234, 0.3), rgba(118, 75, 162, 0.3));
+  background: linear-gradient(135deg, rgba(255, 210, 225, 0.3), rgba(200, 180, 255, 0.3));
   border: 1px solid rgba(102, 126, 234, 0.3);
 }
 
@@ -186,7 +186,7 @@ onUnmounted(() => {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(15, 12, 41, 0.97);
+  background: rgba(255, 245, 250, 0.97);
   backdrop-filter: blur(30px);
   display: flex;
   flex-direction: column;
