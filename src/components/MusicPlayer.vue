@@ -55,13 +55,13 @@
             <p>输入网易云音乐歌曲 ID 来播放</p>
             <p class="player-panel__hint">
               打开网易云网页版 → 歌曲详情页 → 网址中的 id 数字<br />
-              例如：<code>https://music.163.com/#/song?id=<strong>490181018</strong></code>
+              <code>https://music.163.com/song?id=<strong>399367379</strong>&uct2=U2FsdGVkX1+i+ldKimAqOP4FH0Qa0HS6IaEr9H8TwMQ=</code>
             </p>
           </div>
         </div>
 
         <p class="player-panel__tip">
-          💡 点击唱片收起面板 · 输入歌曲 ID 按回车切换歌曲
+          点击唱片收起面板 · 输入歌曲 ID 按回车切换歌曲
         </p>
       </div>
     </transition>
@@ -72,9 +72,9 @@
 import { ref, computed } from 'vue'
 
 // 默认歌曲 ID（可在此修改）
-const DEFAULT_SONG_ID = '490181018' // 示例：动漫风格歌曲
+const DEFAULT_SONG_ID = '399367379' // 默认歌曲
 
-const isOpen = ref(false)
+const isOpen = ref(true) // 默认打开播放
 const currentSongId = ref(DEFAULT_SONG_ID)
 const songIdInput = ref(DEFAULT_SONG_ID)
 
@@ -218,7 +218,7 @@ function updateSongId() {
   align-items: center;
   justify-content: center;
   font-size: 7px;
-  color: #fff;
+  color: #efeded;
   white-space: nowrap;
   box-shadow: 0 0 8px rgba(255, 133, 162, 0.4);
 }
@@ -239,7 +239,7 @@ function updateSongId() {
 .tonearm {
   position: absolute;
   top: -15px;
-  right: -5px;
+  right: 10px;
   width: 28px;
   height: 4px;
   background: linear-gradient(90deg, #555, #888);
@@ -268,6 +268,7 @@ function updateSongId() {
 /* ---- 播放面板 ---- */
 .player-panel {
   width: 320px;
+  height: auto;
   padding: 20px !important;
   cursor: default !important;
   animation: panelSlideUp 0.3s ease-out;
@@ -359,6 +360,7 @@ function updateSongId() {
 .player-panel__iframe-wrapper {
   border-radius: var(--radius-sm);
   overflow: hidden;
+  height: 100px;
   margin-bottom: 10px;
 }
 

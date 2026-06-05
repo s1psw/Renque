@@ -112,7 +112,7 @@ body::before {
 
 /* 花瓣装饰元素 */
 body::after {
-  content: '🌸 🌸 🌸';
+  content: '🌸';
   position: fixed;
   top: -60px;
   left: 5%;
