@@ -1,0 +1,57 @@
+name: 自动部署到 GitHub Pages
+
+# 当推送到 main 分支时自动触发
+on:
+  push:
+    branches: [main]
+  # 也允许手动触发
+  workflow_dispatch:
+
+# 设置 GITHUB_TOKEN 权限
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# 防止并发部署冲突
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      # 1. 检出代码
+      - name: 📥 检出代码
+        uses: actions/checkout@v4
+
+      # 2. 安装 Node.js
+      - name: 🔧 安装 Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      # 3. 安装依赖
+      - name: 📦 安装依赖
+        run: npm ci
+
+      # 4. 构建项目
+      - name: 🏗️ 构建项目
+        run: npm run build
+
+      # 5. 上传构建产物
+      - name: 📤 上传构建产物
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+      # 6. 部署到 GitHub Pages
+      - name: 🚀 部署到 GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
