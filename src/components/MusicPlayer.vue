@@ -1,14 +1,13 @@
 <template>
   <!-- 音乐播放器：柔美封面唱片 -->
   <div class="music-player">
-    <!-- 极小化 iframe 播放器（不可 display:none，否则浏览器阻止自动播放） -->
-    <iframe
-      ref="iframeRef"
-      class="audio-iframe"
-      :src="iframeSrc"
-      frameborder="0"
-      allow="autoplay"
-    ></iframe>
+    <!-- 本地音频播放 -->
+    <audio
+      ref="audioRef"
+      src="/music.mp3"
+      loop
+      preload="auto"
+    ></audio>
 
     <!-- 封面唱片（点击切换播放） -->
     <button
@@ -35,28 +34,37 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, onMounted } from 'vue'
 
-const DEFAULT_SONG_ID = '399367379'
+const isPlaying = ref(false)
+const audioRef = ref(null)
 
-const isPlaying = ref(true)
-const iframeRef = ref(null)
-
-// 网易云外链播放器 URL
-const iframeSrc = computed(() => {
-  return `https://music.163.com/outchain/player?type=2&id=${DEFAULT_SONG_ID}&auto=1&height=66`
+// 页面加载后尝试自动播放
+onMounted(() => {
+  const audio = audioRef.value
+  if (!audio) return
+  audio.volume = 0.5
+  audio.play().then(() => {
+    isPlaying.value = true
+  }).catch(() => {
+    // 浏览器阻止自动播放，用户需手动点击
+    isPlaying.value = false
+  })
 })
 
 function togglePlay() {
-  isPlaying.value = !isPlaying.value
+  const audio = audioRef.value
+  if (!audio) return
+
   if (isPlaying.value) {
-    if (iframeRef.value) {
-      iframeRef.value.src = iframeSrc.value
-    }
+    audio.pause()
+    isPlaying.value = false
   } else {
-    if (iframeRef.value) {
-      iframeRef.value.src = ''
-    }
+    audio.play().then(() => {
+      isPlaying.value = true
+    }).catch(() => {
+      isPlaying.value = false
+    })
   }
 }
 </script>
@@ -68,17 +76,6 @@ function togglePlay() {
   bottom: 60px;
   left: 30px;
   z-index: 950;
-}
-
-/* 极小化 iframe，浏览器必须看到它才能播放（不可 display:none） */
-.audio-iframe {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  bottom: 0;
-  left: 0;
-  opacity: 0.01;
-  pointer-events: none;
 }
 
 /* ---- 封面唱片 ---- */

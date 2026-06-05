@@ -13,8 +13,8 @@
 <script setup>
 import { computed } from 'vue'
 
-// 生成 30 片花瓣，每片参数随机
-const petalCount = 30
+// 生成花瓣，每片参数随机
+const petalCount = 50
 
 function random(min, max) {
   return min + Math.random() * (max - min)

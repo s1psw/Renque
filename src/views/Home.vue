@@ -7,7 +7,7 @@
         <div class="hero__avatar-wrapper">
           <div class="hero__avatar-ring"></div>
           <div class="hero__avatar">
-            <img src="https://avatars.githubusercontent.com/u/123810227?s=400&u=dc18c53d2bf1c70c82ed586465b384bdf550348f&v=4" alt="头像" class="touxiang" />
+           <router-link to="/about" ><img src="https://avatars.githubusercontent.com/u/123810227?s=400&u=dc18c53d2bf1c70c82ed586465b384bdf550348f&v=4" alt="头像" class="touxiang" /></router-link> 
           </div>
         </div>
 
@@ -15,7 +15,7 @@
         <h1 class="hero__greeting">你好，我是 <span class="gradient-text">Renque</span> </h1>
         <p class="hero__subtitle">动画爱好者 / 技术写作者 / 终身学习者</p>
         <p class="hero__bio">
-          热爱探索前沿技术，喜欢将复杂的概念用简单的语言讲清楚。
+          热爱探索前沿技术
           <br />这里记录着我的学习、思考与创造。
         </p>
 
