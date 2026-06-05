@@ -1,13 +1,14 @@
 <template>
   <!-- 音乐播放器：柔美封面唱片 -->
   <div class="music-player">
-    <!-- 本地音频播放 -->
+    <!-- 本地音频播放（静音自动播放 → 首次点击取消静音） -->
     <audio
       ref="audioRef"
       :src="`${baseUrl}music.mp3`"
       loop
       preload="auto"
       autoplay
+      muted
     ></audio>
 
     <!-- 封面唱片（点击切换播放） -->
@@ -40,49 +41,46 @@ import { ref, onMounted, onUnmounted } from 'vue'
 // 适配 GitHub Pages 子路径
 const baseUrl = import.meta.env.BASE_URL
 
-const isPlaying = ref(false)
+const isPlaying = ref(true)   // 静音自动播放，认为是"播放中"
+const isMuted = ref(true)     // 初始静音
 const audioRef = ref(null)
-let autoPlayAttempted = false
 
-function tryPlay() {
+function handleFirstInteraction() {
   const audio = audioRef.value
   if (!audio) return
+  // 取消静音，设音量
+  audio.muted = false
   audio.volume = 0.5
-  audio.play().then(() => {
-    isPlaying.value = true
-  }).catch(() => {
+  isMuted.value = false
+}
+
+onMounted(() => {
+  // 静音自动播放 — 浏览器允许
+  audioRef.value?.play().catch(() => {
     isPlaying.value = false
   })
-}
-
-// 页面加载后立即尝试
-onMounted(() => {
-  tryPlay()
-  // 如果自动播放被阻止，在用户首次交互时重试
-  if (!isPlaying.value) {
-    autoPlayAttempted = true
-  }
-  document.addEventListener('click', onFirstInteraction, { once: true })
-  document.addEventListener('touchstart', onFirstInteraction, { once: true })
+  // 首次用户交互时取消静音
+  document.addEventListener('click', handleFirstInteraction, { once: true })
+  document.addEventListener('touchstart', handleFirstInteraction, { once: true })
 })
 
-function onFirstInteraction() {
-  if (!isPlaying.value) {
-    tryPlay()
-  }
-}
-
 onUnmounted(() => {
-  document.removeEventListener('click', onFirstInteraction)
-  document.removeEventListener('touchstart', onFirstInteraction)
+  document.removeEventListener('click', handleFirstInteraction)
+  document.removeEventListener('touchstart', handleFirstInteraction)
 })
 
 function togglePlay() {
+  const audio = audioRef.value
+  if (!audio) return
   if (isPlaying.value) {
-    audioRef.value?.pause()
+    audio.pause()
     isPlaying.value = false
   } else {
-    tryPlay()
+    audio.play().then(() => {
+      isPlaying.value = true
+    }).catch(() => {
+      isPlaying.value = false
+    })
   }
 }
 </script>
