@@ -1,8 +1,9 @@
 <template>
-  <!-- 音乐播放器：柔美封面唱片 -->
+  <!-- 音乐播放器：本地音频优先，失败则网易云 iframe 兜底 -->
   <div class="music-player">
-    <!-- 本地音频 -->
+    <!-- 本地音频（优先） -->
     <audio
+      v-if="!useFallback"
       ref="audioRef"
       :src="`${baseUrl}music.mp3`"
       loop
@@ -10,10 +11,21 @@
       autoplay
       playsinline
       @canplaythrough="onReady"
-      @error="onError"
+      @error="switchToFallback"
+      @stalled="switchToFallback"
     ></audio>
 
-    <!-- 封面唱片（点击切换播放） -->
+    <!-- 网易云 iframe 兜底（极小化，不可 display:none） -->
+    <iframe
+      v-if="useFallback"
+      ref="iframeRef"
+      class="fallback-iframe"
+      :src="`https://music.163.com/outchain/player?type=2&id=399367379&auto=1&height=66`"
+      frameborder="0"
+      allow="autoplay"
+    ></iframe>
+
+    <!-- 封面唱片 -->
     <button
       class="cover-disc"
       :class="{ 'cover-disc--spinning': isPlaying }"
@@ -21,109 +33,117 @@
       :aria-label="isPlaying ? '暂停' : '播放'"
       :title="isPlaying ? '点击暂停' : '点击播放'"
     >
-      <!-- 封面图片 -->
       <img
         :src="`${baseUrl}img/cover.png`"
         class="cover-disc__img"
         alt="专辑封面"
       />
-      <!-- 柔光雾面遮罩 -->
       <div class="cover-disc__veil"></div>
-      <!-- 光晕环 -->
       <div class="cover-disc__glow-ring"></div>
-      <!-- 唱臂 -->
       <div class="tonearm" :class="{ 'tonearm--on': isPlaying }"></div>
     </button>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, nextTick } from 'vue'
 
 const baseUrl = import.meta.env.BASE_URL
+const SONG_ID = '399367379'
 
 const isPlaying = ref(false)
+const useFallback = ref(false)
 const audioRef = ref(null)
-let playAttempted = false
+const iframeRef = ref(null)
+let playTried = false
 
-// 音频加载完成后自动播放
-function onReady() {
-  if (playAttempted) return
-  playAttempted = true
+// 尝试本地音频播放
+function tryLocalPlay() {
+  if (playTried || useFallback.value) return
+  playTried = true
 
   const audio = audioRef.value
   if (!audio) return
   audio.volume = 0.5
 
-  // 先尝试直接有声播放
-  const tryUnmuted = () => {
-    audio.muted = false
+  // 先试有声
+  audio.muted = false
+  audio.play().then(() => {
+    isPlaying.value = true
+  }).catch(() => {
+    // 有声被阻，试静音
+    audio.muted = true
     audio.play().then(() => {
       isPlaying.value = true
+      // 首次点击取消静音
+      const unmute = () => {
+        if (audio) { audio.muted = false; audio.volume = 0.5 }
+        document.removeEventListener('click', unmute)
+        document.removeEventListener('touchstart', unmute)
+      }
+      document.addEventListener('click', unmute, { once: true })
+      document.addEventListener('touchstart', unmute, { once: true })
     }).catch(() => {
-      // 浏览器阻止有声播放，回退到静音播放
-      audio.muted = true
-      audio.play().then(() => {
-        isPlaying.value = true
-        // 等待用户首次交互后取消静音
-        const unmute = () => {
-          audio.muted = false
-          audio.volume = 0.5
-          document.removeEventListener('click', unmute)
-          document.removeEventListener('touchstart', unmute)
-        }
-        document.addEventListener('click', unmute, { once: true })
-        document.addEventListener('touchstart', unmute, { once: true })
-      }).catch(() => {
-        // 静音也失败，等用户点击唱片手动播放
-        isPlaying.value = false
-      })
+      // 静音也失败 → 切网易云
+      switchToFallback()
     })
+  })
+}
+
+// 本地音频就绪
+function onReady() {
+  setTimeout(tryLocalPlay, 100)
+}
+
+// 切到网易云 iframe
+function switchToFallback() {
+  if (useFallback.value) return
+  useFallback.value = true
+  nextTick(() => {
+    // iframe 的 auto=1 会自动播放
+    isPlaying.value = true
+  })
+}
+
+// 兜底：2 秒还没触发 canplaythrough 就认为本地文件不可用
+setTimeout(() => {
+  if (!playTried && !useFallback.value) {
+    switchToFallback()
+  }
+}, 3000)
+
+// 点击唱片
+function togglePlay() {
+  if (useFallback.value) {
+    // 网易云 iframe 模式：点击重建 iframe 切换播放
+    isPlaying.value = !isPlaying.value
+    if (isPlaying.value && iframeRef.value) {
+      iframeRef.value.src = `https://music.163.com/outchain/player?type=2&id=${SONG_ID}&auto=1&height=66`
+    } else if (!isPlaying.value && iframeRef.value) {
+      iframeRef.value.src = ''
+    }
+    return
   }
 
-  // 给浏览器一点时间完成加载
-  setTimeout(tryUnmuted, 100)
-}
-
-function onError() {
-  console.error('音频文件加载失败，请检查文件路径')
-}
-
-// 兜底：onMounted 时如果 canplaythrough 没触发，手动尝试
-onMounted(() => {
-  setTimeout(() => {
-    if (!playAttempted) onReady()
-  }, 2000)
-})
-
-function togglePlay() {
+  // 本地音频模式
   const audio = audioRef.value
   if (!audio) return
-
   if (isPlaying.value) {
     audio.pause()
     isPlaying.value = false
   } else {
-    // 用户主动点击，这时有手势，可以直接有声播放
     audio.muted = false
     audio.volume = 0.5
     audio.play().then(() => {
       isPlaying.value = true
     }).catch(() => {
-      // 失败就静音播放
-      audio.muted = true
-      audio.play().then(() => {
-        isPlaying.value = true
-      }).catch(() => {
-        isPlaying.value = false
-      })
+      switchToFallback()
     })
   }
 }
 </script>
 
 <style scoped>
-/* ---- 容器 ---- */
 .music-player {
   position: fixed;
   bottom: 60px;
@@ -131,11 +151,21 @@ function togglePlay() {
   z-index: 950;
 }
 
+/* 兜底 iframe：1x1 像素可见，避免浏览器阻止 */
+.fallback-iframe {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  bottom: 0;
+  left: 0;
+  opacity: 0.01;
+  pointer-events: none;
+}
+
 /* ---- 封面唱片 ---- */
 .cover-disc {
   position: relative;
   width: 120px;
-  
   border-radius: 50%;
   border: none;
   padding: 0;
@@ -155,7 +185,6 @@ function togglePlay() {
     0 8px 40px rgba(154, 117, 178, 0.4);
 }
 
-/* 封面图片 */
 .cover-disc__img {
   width: 100%;
   height: 100%;
@@ -165,7 +194,6 @@ function togglePlay() {
   filter: brightness(1.08) contrast(0.92) saturate(0.9);
 }
 
-/* 柔光雾面遮罩 — 微微透明的柔美感 */
 .cover-disc__veil {
   position: absolute;
   inset: 0;
@@ -177,7 +205,6 @@ function togglePlay() {
   pointer-events: none;
 }
 
-/* 光晕环 */
 .cover-disc__glow-ring {
   position: absolute;
   inset: -2px;
@@ -187,7 +214,6 @@ function togglePlay() {
   box-shadow: inset 0 0 12px rgba(255, 220, 240, 0.2);
 }
 
-/* 旋转动画 */
 .cover-disc--spinning {
   animation: coverSpin 5s linear infinite !important;
 }
@@ -202,7 +228,6 @@ function togglePlay() {
   50% { transform: translateY(-6px); }
 }
 
-/* 唱臂 */
 .tonearm {
   position: absolute;
   top: -18px;
@@ -234,13 +259,11 @@ function togglePlay() {
   transform: rotate(-5deg);
 }
 
-/* 响应式 */
 @media (max-width: 768px) {
   .music-player {
     bottom: 20px;
     left: 20px;
   }
-
   .cover-disc {
     width: 64px;
     height: 64px;
