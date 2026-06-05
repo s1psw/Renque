@@ -1,14 +1,16 @@
 <template>
   <!-- 音乐播放器：柔美封面唱片 -->
   <div class="music-player">
-    <!-- 本地音频播放（静音自动播放 → 首次点击取消静音） -->
+    <!-- 本地音频 -->
     <audio
       ref="audioRef"
       :src="`${baseUrl}music.mp3`"
       loop
       preload="auto"
       autoplay
-      muted
+      playsinline
+      @canplaythrough="onReady"
+      @error="onError"
     ></audio>
 
     <!-- 封面唱片（点击切换播放） -->
@@ -36,50 +38,85 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted } from 'vue'
 
-// 适配 GitHub Pages 子路径
 const baseUrl = import.meta.env.BASE_URL
 
-const isPlaying = ref(true)   // 静音自动播放，认为是"播放中"
-const isMuted = ref(true)     // 初始静音
+const isPlaying = ref(false)
 const audioRef = ref(null)
+let playAttempted = false
 
-function handleFirstInteraction() {
+// 音频加载完成后自动播放
+function onReady() {
+  if (playAttempted) return
+  playAttempted = true
+
   const audio = audioRef.value
   if (!audio) return
-  // 取消静音，设音量
-  audio.muted = false
   audio.volume = 0.5
-  isMuted.value = false
+
+  // 先尝试直接有声播放
+  const tryUnmuted = () => {
+    audio.muted = false
+    audio.play().then(() => {
+      isPlaying.value = true
+    }).catch(() => {
+      // 浏览器阻止有声播放，回退到静音播放
+      audio.muted = true
+      audio.play().then(() => {
+        isPlaying.value = true
+        // 等待用户首次交互后取消静音
+        const unmute = () => {
+          audio.muted = false
+          audio.volume = 0.5
+          document.removeEventListener('click', unmute)
+          document.removeEventListener('touchstart', unmute)
+        }
+        document.addEventListener('click', unmute, { once: true })
+        document.addEventListener('touchstart', unmute, { once: true })
+      }).catch(() => {
+        // 静音也失败，等用户点击唱片手动播放
+        isPlaying.value = false
+      })
+    })
+  }
+
+  // 给浏览器一点时间完成加载
+  setTimeout(tryUnmuted, 100)
 }
 
-onMounted(() => {
-  // 静音自动播放 — 浏览器允许
-  audioRef.value?.play().catch(() => {
-    isPlaying.value = false
-  })
-  // 首次用户交互时取消静音
-  document.addEventListener('click', handleFirstInteraction, { once: true })
-  document.addEventListener('touchstart', handleFirstInteraction, { once: true })
-})
+function onError() {
+  console.error('音频文件加载失败，请检查文件路径')
+}
 
-onUnmounted(() => {
-  document.removeEventListener('click', handleFirstInteraction)
-  document.removeEventListener('touchstart', handleFirstInteraction)
+// 兜底：onMounted 时如果 canplaythrough 没触发，手动尝试
+onMounted(() => {
+  setTimeout(() => {
+    if (!playAttempted) onReady()
+  }, 2000)
 })
 
 function togglePlay() {
   const audio = audioRef.value
   if (!audio) return
+
   if (isPlaying.value) {
     audio.pause()
     isPlaying.value = false
   } else {
+    // 用户主动点击，这时有手势，可以直接有声播放
+    audio.muted = false
+    audio.volume = 0.5
     audio.play().then(() => {
       isPlaying.value = true
     }).catch(() => {
-      isPlaying.value = false
+      // 失败就静音播放
+      audio.muted = true
+      audio.play().then(() => {
+        isPlaying.value = true
+      }).catch(() => {
+        isPlaying.value = false
+      })
     })
   }
 }
