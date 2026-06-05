@@ -1,10 +1,10 @@
 <template>
   <!-- 音乐播放器：柔美封面唱片 -->
   <div class="music-player">
-    <!-- 隐藏的 iframe 播放器 -->
+    <!-- 极小化 iframe 播放器（不可 display:none，否则浏览器阻止自动播放） -->
     <iframe
-      v-show="false"
       ref="iframeRef"
+      class="audio-iframe"
       :src="iframeSrc"
       frameborder="0"
       allow="autoplay"
@@ -68,6 +68,17 @@ function togglePlay() {
   bottom: 30px;
   left: 30px;
   z-index: 950;
+}
+
+/* 极小化 iframe，浏览器必须看到它才能播放（不可 display:none） */
+.audio-iframe {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  bottom: 0;
+  left: 0;
+  opacity: 0.01;
+  pointer-events: none;
 }
 
 /* ---- 封面唱片 ---- */
