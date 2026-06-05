@@ -4,9 +4,10 @@
     <!-- 本地音频播放 -->
     <audio
       ref="audioRef"
-      src="/music.mp3"
+      :src="`${baseUrl}music.mp3`"
       loop
       preload="auto"
+      autoplay
     ></audio>
 
     <!-- 封面唱片（点击切换播放） -->
@@ -19,7 +20,7 @@
     >
       <!-- 封面图片 -->
       <img
-        src="/img/cover.png"
+        :src="`${baseUrl}img/cover.png`"
         class="cover-disc__img"
         alt="专辑封面"
       />
@@ -35,6 +36,9 @@
 
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
+
+// 适配 GitHub Pages 子路径
+const baseUrl = import.meta.env.BASE_URL
 
 const isPlaying = ref(false)
 const audioRef = ref(null)
