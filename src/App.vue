@@ -1,6 +1,9 @@
 <template>
   <!-- 根组件：全局布局框架 -->
   <div class="app-wrapper">
+    <!-- 樱花花瓣飘落 -->
+    <SakuraPetals />
+
     <!-- 顶部导航栏 -->
     <NavBar />
 
@@ -32,6 +35,7 @@ import NavBar from './components/NavBar.vue'
 import Footer from './components/Footer.vue'
 import BackToTop from './components/BackToTop.vue'
 import MouseTrail from './components/mousemove.vue'
+import SakuraPetals from './components/SakuraPetals.vue'
 import MusicPlayer from './components/MusicPlayer.vue'
 </script>
 

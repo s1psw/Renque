@@ -65,7 +65,7 @@ function togglePlay() {
 /* ---- 容器 ---- */
 .music-player {
   position: fixed;
-  bottom: 30px;
+  bottom: 60px;
   left: 30px;
   z-index: 950;
 }
@@ -84,8 +84,8 @@ function togglePlay() {
 /* ---- 封面唱片 ---- */
 .cover-disc {
   position: relative;
-  width: 80px;
-  height: 80px;
+  width: 120px;
+  
   border-radius: 50%;
   border: none;
   padding: 0;
@@ -93,7 +93,7 @@ function togglePlay() {
   overflow: hidden;
   box-shadow:
     0 0 0 3px rgba(255, 255, 255, 0.45),
-    0 4px 28px rgba(180, 150, 200, 0.25);
+    0 4px 28px rgba(154, 117, 178, 0.25);
   transition: transform 0.3s ease, box-shadow 0.4s ease;
   animation: coverFloat 4s ease-in-out infinite;
   background: #f5eef8;
@@ -102,7 +102,7 @@ function togglePlay() {
 .cover-disc:hover {
   box-shadow:
     0 0 0 3px rgba(255, 255, 255, 0.65),
-    0 8px 40px rgba(220, 170, 200, 0.4);
+    0 8px 40px rgba(154, 117, 178, 0.4);
 }
 
 /* 封面图片 */
@@ -139,7 +139,7 @@ function togglePlay() {
 
 /* 旋转动画 */
 .cover-disc--spinning {
-  animation: coverSpin 3s linear infinite !important;
+  animation: coverSpin 5s linear infinite !important;
 }
 
 @keyframes coverSpin {
