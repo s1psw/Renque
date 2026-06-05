@@ -1,5 +1,5 @@
 <template>
-  <!-- 音乐播放器：极简封面唱片 -->
+  <!-- 音乐播放器：柔美封面唱片 -->
   <div class="music-player">
     <!-- 隐藏的 iframe 播放器 -->
     <iframe
@@ -18,17 +18,16 @@
       :aria-label="isPlaying ? '暂停' : '播放'"
       :title="isPlaying ? '点击暂停' : '点击播放'"
     >
-      <!-- 封面图片（全覆盖） -->
+      <!-- 封面图片 -->
       <img
-        v-if="coverUrl"
-        :src="coverUrl"
+        src="/img/cover.png"
         class="cover-disc__img"
         alt="专辑封面"
       />
-      <!-- 加载中占位 -->
-      <div v-else class="cover-disc__placeholder">
-        <span>🎵</span>
-      </div>
+      <!-- 柔光雾面遮罩 -->
+      <div class="cover-disc__veil"></div>
+      <!-- 光晕环 -->
+      <div class="cover-disc__glow-ring"></div>
       <!-- 唱臂 -->
       <div class="tonearm" :class="{ 'tonearm--on': isPlaying }"></div>
     </button>
@@ -36,59 +35,30 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watch } from 'vue'
+import { ref, computed } from 'vue'
 
 const DEFAULT_SONG_ID = '399367379'
 
 const isPlaying = ref(true)
-const currentSongId = ref(DEFAULT_SONG_ID)
-const coverUrl = ref('')
 const iframeRef = ref(null)
 
 // 网易云外链播放器 URL
 const iframeSrc = computed(() => {
-  return `https://music.163.com/outchain/player?type=2&id=${currentSongId.value}&auto=1&height=66`
+  return `https://music.163.com/outchain/player?type=2&id=${DEFAULT_SONG_ID}&auto=1&height=66`
 })
-
-// 获取歌曲封面
-async function fetchCover(songId) {
-  try {
-    const res = await fetch(
-      `https://api.uomg.com/api/netease.song?id=${songId}`
-    )
-    const json = await res.json()
-    if (json.code === 1 && json.data && json.data.cover) {
-      coverUrl.value = json.data.cover
-    }
-  } catch {
-    // 获取失败使用默认占位
-    coverUrl.value = ''
-  }
-}
 
 function togglePlay() {
   isPlaying.value = !isPlaying.value
   if (isPlaying.value) {
-    // 重新加载 iframe 以恢复播放
     if (iframeRef.value) {
       iframeRef.value.src = iframeSrc.value
     }
   } else {
-    // 清空 iframe 停止播放
     if (iframeRef.value) {
       iframeRef.value.src = ''
     }
   }
 }
-
-onMounted(() => {
-  fetchCover(currentSongId.value)
-})
-
-// 当歌曲 ID 变化时重新获取封面
-watch(currentSongId, (id) => {
-  fetchCover(id)
-})
 </script>
 
 <style scoped>
@@ -111,36 +81,49 @@ watch(currentSongId, (id) => {
   cursor: pointer;
   overflow: hidden;
   box-shadow:
-    0 4px 24px rgba(100, 80, 120, 0.3),
-    0 0 0 4px rgba(255, 255, 255, 0.5);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  animation: coverFloat 3s ease-in-out infinite;
-  background: #1a1a2e;
+    0 0 0 3px rgba(255, 255, 255, 0.45),
+    0 4px 28px rgba(180, 150, 200, 0.25);
+  transition: transform 0.3s ease, box-shadow 0.4s ease;
+  animation: coverFloat 4s ease-in-out infinite;
+  background: #f5eef8;
 }
 
 .cover-disc:hover {
   box-shadow:
-    0 8px 36px rgba(255, 133, 162, 0.4),
-    0 0 0 4px rgba(255, 255, 255, 0.7);
+    0 0 0 3px rgba(255, 255, 255, 0.65),
+    0 8px 40px rgba(220, 170, 200, 0.4);
 }
 
-/* 封面图片全覆盖 */
+/* 封面图片 */
 .cover-disc__img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
+  opacity: 0.85;
+  filter: brightness(1.08) contrast(0.92) saturate(0.9);
 }
 
-/* 加载中占位 */
-.cover-disc__placeholder {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(135deg, #2d1b3d, #1a1a2e);
-  font-size: 28px;
+/* 柔光雾面遮罩 — 微微透明的柔美感 */
+.cover-disc__veil {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.2) 0%, transparent 60%),
+    radial-gradient(circle at 70% 60%, rgba(220, 180, 220, 0.12) 0%, transparent 50%),
+    linear-gradient(180deg, rgba(255, 240, 250, 0.08) 0%, rgba(240, 220, 250, 0.15) 100%);
+  pointer-events: none;
+}
+
+/* 光晕环 */
+.cover-disc__glow-ring {
+  position: absolute;
+  inset: -2px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  pointer-events: none;
+  box-shadow: inset 0 0 12px rgba(255, 220, 240, 0.2);
 }
 
 /* 旋转动画 */
@@ -154,8 +137,8 @@ watch(currentSongId, (id) => {
 }
 
 @keyframes coverFloat {
-  0%, 100% { transform: translateY(0) rotate(0deg); }
-  50% { transform: translateY(-6px) rotate(0deg); }
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
 }
 
 /* 唱臂 */
@@ -165,12 +148,12 @@ watch(currentSongId, (id) => {
   right: -2px;
   width: 34px;
   height: 4px;
-  background: linear-gradient(90deg, #999, #bbb);
+  background: linear-gradient(90deg, #b0a0b8, #d0c8d8);
   border-radius: 2px;
   transform-origin: right center;
   transform: rotate(-30deg);
   transition: transform 0.5s ease;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 1px 3px rgba(100, 80, 100, 0.25);
   z-index: 2;
 }
 
@@ -182,8 +165,8 @@ watch(currentSongId, (id) => {
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  background: #aaa;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  background: #c8bcd0;
+  box-shadow: 0 1px 3px rgba(100, 80, 100, 0.25);
 }
 
 .tonearm--on {
