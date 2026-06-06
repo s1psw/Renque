@@ -4,8 +4,8 @@ import { fileURLToPath, URL } from 'node:url'
 
 // Vite 配置
 export default defineConfig({
-  // GitHub Pages 部署路径（仓库名为 Renque）
-  base: '/Renque/',
+  // 部署路径（Cloudflare Pages 用 /，GitHub Pages 用 /Renque/）
+  base: '/',
   plugins: [vue()],
   server: {
     port: 3000,

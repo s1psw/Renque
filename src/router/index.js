@@ -39,8 +39,7 @@ const routes = [
 
 // 创建路由实例
 const router = createRouter({
-  // GitHub Pages 子路径（与 vite.config.js 的 base 保持一致）
-  history: createWebHistory('/Renque/'),
+  history: createWebHistory('/'),
   routes,
   // 页面切换后滚动到顶部
   scrollBehavior() {
