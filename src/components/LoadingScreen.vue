@@ -54,13 +54,12 @@ const pageNames = {
 
 const phrases = [
   '桜が舞い降りる…',
-  '音楽を準備中…',
+  'Loading…',
   '思い出を整理中…',
   '星を数えています…',
-  'お茶を淹れています…',
+  '少女祈祷中…',
   '風が吹いています…',
-  '猫が横切っています…',
-  '雲が流れています…'
+  '起风了…'
 ]
 
 const visible = ref(true)
@@ -129,12 +128,12 @@ function reset() {
 }
 
 // 初始加载 — 稍长
-startProgress(2200)
+startProgress(1200)
 
 // 路由切换 — 短暂加载
 watch(() => router.currentRoute.value.path, () => {
   if (visible.value) return
-  startProgress(1200)
+  startProgress(400)
 })
 
 onUnmounted(() => {
