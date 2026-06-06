@@ -295,8 +295,8 @@ const nextPost = computed(() => {
 }
 
 .post-content :deep(.code-block) {
-  background: rgba(0, 0, 0, 0.4);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(60, 45, 70, 0.06);
+  border: 1px solid rgba(180, 150, 200, 0.2);
   border-radius: var(--radius-md);
   padding: 20px 24px;
   overflow-x: auto;
@@ -304,16 +304,17 @@ const nextPost = computed(() => {
   font-family: 'Space Grotesk', 'Noto Sans SC', monospace;
   font-size: 0.9rem;
   line-height: 1.6;
-  color: #d4d4d8;
+  color: #4a3f5c;
 }
 
 .post-content :deep(.inline-code) {
-  background: rgba(102, 126, 234, 0.15);
-  color: var(--accent-start);
+  background: rgba(255, 133, 162, 0.12);
+  color: #c94d6e;
   padding: 2px 8px;
   border-radius: 4px;
   font-family: 'Space Grotesk', monospace;
   font-size: 0.9em;
+  border: 1px solid rgba(255, 133, 162, 0.15);
 }
 
 .post-content :deep(ul) {

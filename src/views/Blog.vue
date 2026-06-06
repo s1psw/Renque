@@ -3,7 +3,7 @@
     <section class="container">
       <!-- 页面标题 -->
       <div class="page-header">
-        <h1 class="page-title">📝 文章列表</h1>
+        <h1 class="page-title">文章列表</h1>
         <p class="page-subtitle">探索所有文章，找到感兴趣的内容</p>
         <div class="divider"></div>
       </div>
@@ -110,8 +110,8 @@ const filteredPosts = computed(() => {
 .filter-btn {
   padding: 8px 22px;
   border-radius: 50px;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  background: transparent;
+  border: 1px solid rgba(180, 150, 200, 0.35);
+  background: rgba(255, 255, 255, 0.3);
   color: var(--text-secondary);
   font-family: inherit;
   font-size: 0.9rem;
@@ -122,13 +122,15 @@ const filteredPosts = computed(() => {
 
 .filter-btn:hover {
   border-color: var(--accent-start);
-  color: var(--text-primary);
+  color: var(--accent-start);
+  background: rgba(255, 133, 162, 0.06);
 }
 
 .filter-btn--active {
-  background: linear-gradient(135deg, rgba(102, 126, 234, 0.3), rgba(118, 75, 162, 0.3));
-  border-color: rgba(102, 126, 234, 0.5);
-  color: #fff;
+  background: linear-gradient(135deg, rgba(255, 133, 162, 0.2), rgba(167, 139, 250, 0.2));
+  border-color: rgba(255, 133, 162, 0.4);
+  color: var(--accent-start);
+  font-weight: 600;
 }
 
 .filter-count {

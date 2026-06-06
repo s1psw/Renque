@@ -1,50 +1,55 @@
 <template>
-  <!-- 音乐播放器：网易云 iframe -->
+  <!-- 音乐播放器：网易云 iframe 藏在唱片后面 -->
   <div class="music-player">
-    <!-- 网易云播放器 iframe -->
-    <iframe
-      ref="iframeRef"
-      class="audio-iframe"
-      :src="`https://music.163.com/outchain/player?type=2&id=399367379&auto=1&height=66`"
-      frameborder="0"
-      allow="autoplay"
-    ></iframe>
+    <!-- 唱片容器（包裹 iframe + 封面） -->
+    <div class="player-wrapper" @click="togglePlay">
+      <!-- 网易云 iframe 在底层，唱片挡住它 -->
+      <iframe
+        ref="iframeRef"
+        class="audio-iframe"
+        :src="iframeSrc"
+        frameborder="0"
+        allow="autoplay *"
+      ></iframe>
 
-    <!-- 封面唱片（点击切换播放） -->
-    <button
-      class="cover-disc"
-      :class="{ 'cover-disc--spinning': isPlaying }"
-      @click="togglePlay"
-      :aria-label="isPlaying ? '暂停' : '播放'"
-      :title="isPlaying ? '点击暂停' : '点击播放'"
-    >
-      <img
-        :src="`${baseUrl}img/cover.png`"
-        class="cover-disc__img"
-        alt="专辑封面"
-      />
-      <div class="cover-disc__veil"></div>
-      <div class="cover-disc__glow-ring"></div>
-      <div class="tonearm" :class="{ 'tonearm--on': isPlaying }"></div>
-    </button>
+      <!-- 封面唱片盖在 iframe 上面 -->
+      <div
+        class="cover-disc"
+        :class="{ 'cover-disc--spinning': isPlaying }"
+        :aria-label="isPlaying ? '暂停' : '播放'"
+        :title="isPlaying ? '点击暂停' : '点击播放'"
+      >
+        <img
+          :src="`${baseUrl}img/cover.png`"
+          class="cover-disc__img"
+          alt="专辑封面"
+        />
+        <div class="cover-disc__veil"></div>
+        <div class="cover-disc__glow-ring"></div>
+        <div class="tonearm" :class="{ 'tonearm--on': isPlaying }"></div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 
 const baseUrl = import.meta.env.BASE_URL
 const SONG_ID = '399367379'
 
-const isPlaying = ref(true)   // 默认播放
+const isPlaying = ref(true)
 const iframeRef = ref(null)
+
+const iframeSrc = computed(() =>
+  `https://music.163.com/outchain/player?type=2&id=${SONG_ID}&auto=${isPlaying.value ? 1 : 0}&height=66`
+)
 
 function togglePlay() {
   isPlaying.value = !isPlaying.value
+  // 强制刷新 iframe
   if (iframeRef.value) {
-    iframeRef.value.src = isPlaying.value
-      ? `https://music.163.com/outchain/player?type=2&id=${SONG_ID}&auto=1&height=66`
-      : ''
+    iframeRef.value.src = iframeSrc.value
   }
 }
 </script>
@@ -52,31 +57,43 @@ function togglePlay() {
 <style scoped>
 .music-player {
   position: fixed;
-  bottom: 60px;
+  bottom: 30px;
   left: 30px;
   z-index: 950;
 }
 
-/* 极小化 iframe，保持可见避免浏览器阻止 */
+/* 包装器：iframe 在底层，唱片盖在上面 */
+.player-wrapper {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  cursor: pointer;
+}
+
+/* iframe 正常大小在底层，唱片遮住它 */
 .audio-iframe {
   position: absolute;
-  width: 1px;
-  height: 1px;
-  bottom: 0;
-  left: 0;
-  opacity: 0.01;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  opacity: 0;
   pointer-events: none;
+  z-index: 1;
 }
 
 /* ---- 封面唱片 ---- */
 .cover-disc {
-  position: relative;
-  width: 120px;
+  position: absolute;
+  inset: 0;
   border-radius: 50%;
   border: none;
   padding: 0;
-  cursor: pointer;
   overflow: hidden;
+  z-index: 2;
+  pointer-events: none; /* 点击由 .player-wrapper 处理 */
   box-shadow:
     0 0 0 3px rgba(255, 255, 255, 0.45),
     0 4px 28px rgba(154, 117, 178, 0.25);
@@ -170,7 +187,11 @@ function togglePlay() {
     bottom: 20px;
     left: 20px;
   }
-  .cover-disc {
+  .player-wrapper {
+    width: 64px;
+    height: 64px;
+  }
+  .audio-iframe {
     width: 64px;
     height: 64px;
   }

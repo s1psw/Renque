@@ -13,10 +13,10 @@
 
         <!-- 介绍文字 -->
         <h1 class="hero__greeting">你好，我是 <span class="gradient-text">Renque</span> </h1>
-        <p class="hero__subtitle">动画爱好者 / 技术写作者 / 终身学习者</p>
+        <p class="hero__subtitle"></p>
         <p class="hero__bio">
-          热爱探索前沿技术
-          <br />这里记录着我的学习、思考与创造。
+         动画爱好者 / 技术写作者 / 终身学习者
+          <br />
         </p>
 
         <!-- 操作按钮 -->

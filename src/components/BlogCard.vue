@@ -89,7 +89,7 @@ defineProps({
   gap: 10px;
   margin-top: auto;
   padding-top: 8px;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  border-top: 1px solid rgba(180, 150, 200, 0.2);
 }
 
 .blog-card__date {
@@ -106,7 +106,7 @@ defineProps({
 .blog-card__tag {
   font-size: 0.78rem;
   color: var(--accent-start);
-  background: rgba(102, 126, 234, 0.12);
+  background: rgba(255, 133, 162, 0.10);
   padding: 2px 10px;
   border-radius: 12px;
 }
