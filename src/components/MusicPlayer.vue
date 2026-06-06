@@ -70,17 +70,13 @@ function togglePlay() {
   cursor: pointer;
 }
 
-/* iframe 正常大小在底层，唱片遮住它 */
+/* iframe 挪到视口外保持渲染（不可 display:none/opacity:0 否则浏览器阻止） */
 .audio-iframe {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  opacity: 0;
-  pointer-events: none;
+  position: fixed;
+  top: -100px;
+  left: -400px;
+  width: 330px;
+  height: 86px;
   z-index: 1;
 }
 

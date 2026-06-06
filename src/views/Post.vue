@@ -14,6 +14,11 @@
     <template v-else>
       <!-- 文章头部 -->
       <header class="post-header container">
+        <!-- 樱花装饰 -->
+        <div class="post-header__sakura-left">🌸</div>
+        <div class="post-header__sakura-right">🌸</div>
+        <div class="post-header__sparkle">✨</div>
+
         <router-link to="/blog" class="post-header__back">
           ← 返回列表
         </router-link>
@@ -203,6 +208,46 @@ const nextPost = computed(() => {
   max-width: 800px;
   margin: 0 auto 32px;
   text-align: center;
+  position: relative;
+}
+
+/* 樱花装饰 */
+.post-header__sakura-left,
+.post-header__sakura-right {
+  position: absolute;
+  top: -10px;
+  font-size: 2.5rem;
+  opacity: 0.25;
+  pointer-events: none;
+  animation: sakuraBounce 3s ease-in-out infinite;
+}
+.post-header__sakura-left {
+  left: -40px;
+  animation-delay: 0s;
+}
+.post-header__sakura-right {
+  right: -40px;
+  animation-delay: 1.5s;
+}
+
+.post-header__sparkle {
+  position: absolute;
+  top: 60px;
+  right: -20px;
+  font-size: 1.5rem;
+  opacity: 0.3;
+  pointer-events: none;
+  animation: sparkleFloat 2.5s ease-in-out infinite;
+}
+
+@keyframes sakuraBounce {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-12px) rotate(15deg); }
+}
+
+@keyframes sparkleFloat {
+  0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.2; }
+  50% { transform: scale(1.3) rotate(180deg); opacity: 0.45; }
 }
 
 .post-header__back {

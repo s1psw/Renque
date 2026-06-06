@@ -128,54 +128,6 @@ Composition API 不是 Options API 的替代，而是补充。选择哪种方式
   },
   {
     id: '3',
-    title: '2025 JavaScript 新特性盘点',
-    excerpt: '回顾今年 ECMAScript 提案中值得关注的新特性，包括 Temporal、Records & Tuples 等令人期待的功能。',
-    content: `## 年度回顾
-
-2025 年 JavaScript 生态持续演进，让我们看看有哪些值得关注的新特性。
-
-## Temporal API
-
-终于有了现代化的日期时间 API！
-
-\`\`\`js
-const now = Temporal.Now.plainDateTimeISO();
-const tomorrow = now.add({ days: 1 });
-\`\`\`
-
-告别 \`moment.js\` 和 \`date-fns\`，原生 API 即可满足大部分需求。
-
-## Records & Tuples
-
-不可变数据结构成为原生支持：
-
-\`\`\`js
-const record = #{ name: "Alice", age: 30 };
-const tuple = #[1, 2, 3];
-\`\`\`
-
-使用 \`#\` 前缀即可创建不可变数据。
-
-## 装饰器正式稳定
-
-\`\`\`js
-class MyClass {
-  @logged
-  method() {}
-}
-\`\`\`
-
-装饰器语法经过多年讨论终于稳定。
-
-## 总结
-
-JavaScript 正在变得越来越强大，原生 API 的完善减少了对第三方库的依赖。`,
-    date: '2025-10-20',
-    category: '前端开发',
-    tags: ['JavaScript', 'ECMAScript', '新特性']
-  },
-  {
-    id: '4',
     title: '从零搭建个人博客的技术选型',
     excerpt: '比较多种博客搭建方案：Hexo、VuePress、Nuxt Content 到纯手写 Vue 3 项目，帮你找到最适合自己的方式。',
     content: `## 为什么要自己搭建博客？
@@ -224,7 +176,7 @@ Vue 驱动的静态站点生成器。
     tags: ['博客', 'Vue.js', '技术选型', '建站']
   },
   {
-    id: '5',
+    id: '4',
     title: '前端动画性能优化实战',
     excerpt: '深入分析 CSS 动画与 JavaScript 动画的性能差异，分享如何用 FLIP 技术实现 60fps 流畅动画。',
     content: `## 动画性能为什么重要？
@@ -283,7 +235,7 @@ el.animate([
     tags: ['CSS', 'JavaScript', '性能优化', '动画']
   },
   {
-    id: '6',
+    id: '5',
     title: '程序员的效率工具清单 2025',
     excerpt: '分享我日常开发中不可或缺的效率工具：从编辑器插件到命令行工具，全面提升你的开发工作流。',
     content: `## 工欲善其事，必先利其器
