@@ -1,6 +1,6 @@
 <template>
   <div class="music-player">
-    <!-- 本地音频 -->
+    <!-- 本地音频：静音自动播放 -->
     <audio
       ref="audioRef"
       :src="`${baseUrl}music.mp3`"
@@ -13,7 +13,7 @@
       @pause="onPause"
     ></audio>
 
-    <!-- 封面唱片 -->
+    <!-- 封面唱片按钮 -->
     <button
       class="cover-disc"
       :class="{ 'cover-disc--spinning': isPlaying }"
@@ -38,62 +38,99 @@ import { ref, onMounted, onUnmounted } from 'vue'
 
 const baseUrl = import.meta.env.BASE_URL
 
-const isPlaying = ref(true)
-const isMuted = ref(true)
+const isPlaying = ref(true)       // 当前播放状态
 const audioRef = ref(null)
+let audioEnabled = false          // 是否已激活声音（用户已交互）
+let globalUnmuteHandler = null    // 全局事件处理器引用
 
-// 首次用户交互：取消静音
-function unmute() {
-  const a = audioRef.value
-  if (!a) return
-  a.muted = false
-  a.volume = 0.5
-  isMuted.value = false
+// 激活声音：取消静音，如果处于暂停状态则开始播放
+function enableAudio() {
+  const audio = audioRef.value
+  if (!audio || audioEnabled) return
+
+  // 取消静音，设置音量
+  audio.muted = false
+  audio.volume = 0.5
+
+  // 如果当前是暂停状态，则开始播放
+  if (audio.paused) {
+    audio.play().catch(() => {
+      // 极少数情况播放失败，保持静音并重试一次
+      audio.muted = true
+      audio.play()
+    })
+  }
+
+  audioEnabled = true
+
+  // 移除全局事件监听，防止重复激活
+  if (globalUnmuteHandler) {
+    document.removeEventListener('click', globalUnmuteHandler)
+    document.removeEventListener('touchstart', globalUnmuteHandler)
+    globalUnmuteHandler = null
+  }
 }
 
-onMounted(() => {
-  const a = audioRef.value
-  if (!a) return
-
-  // 静音自动播放（浏览器允许）
-  a.play().catch(() => {
-    isPlaying.value = false
-  })
-
-  // 用户首次点击/触摸 → 取消静音
-  document.addEventListener('click', unmute, { once: true })
-  document.addEventListener('touchstart', unmute, { once: true })
-})
-
-onUnmounted(() => {
-  document.removeEventListener('click', unmute)
-  document.removeEventListener('touchstart', unmute)
-})
-
-function onPlay() { isPlaying.value = true }
-function onPause() { isPlaying.value = false }
-
+// 封面的点击切换逻辑
 function togglePlay() {
-  const a = audioRef.value
-  if (!a) return
+  const audio = audioRef.value
+  if (!audio) return
 
+  // 如果尚未激活声音，先激活声音（保持当前播放/暂停状态不变）
+  if (!audioEnabled) {
+    enableAudio()
+    return
+  }
+
+  // 声音已激活，正常切换播放/暂停
   if (isPlaying.value) {
-    a.pause()
+    audio.pause()
   } else {
-    // 用户点击有手势，直接有声播放
-    a.muted = false
-    a.volume = 0.5
-    isMuted.value = false
-    a.play().catch(() => {
-      // 仍然被阻就静音播放
-      a.muted = true
-      a.play().catch(() => { isPlaying.value = false })
+    // 确保有声播放
+    audio.muted = false
+    audio.volume = 0.5
+    audio.play().catch(() => {
+      // 失败时回退静音播放（基本不会发生）
+      audio.muted = true
+      audio.play()
     })
   }
 }
+
+// 音频事件同步状态
+function onPlay() { isPlaying.value = true }
+function onPause() { isPlaying.value = false }
+
+onMounted(() => {
+  const audio = audioRef.value
+  if (!audio) return
+
+  // 确保自动播放（静音），避免某些浏览器忽略 autoplay 属性
+  audio.play().catch(() => {
+    // 静音播放总是允许的
+    audio.muted = true
+    audio.play()
+  })
+
+  // 定义全局首次交互处理器（任意点击/触摸即激活声音）
+  globalUnmuteHandler = () => {
+    enableAudio()
+  }
+  document.addEventListener('click', globalUnmuteHandler, { once: true })
+  document.addEventListener('touchstart', globalUnmuteHandler, { once: true })
+})
+
+onUnmounted(() => {
+  // 清理事件，避免内存泄漏
+  if (globalUnmuteHandler) {
+    document.removeEventListener('click', globalUnmuteHandler)
+    document.removeEventListener('touchstart', globalUnmuteHandler)
+  }
+})
 </script>
 
 <style scoped>
+/* 样式保持不变，与原代码相同 */
 .music-player {
   position: fixed;
   bottom: 60px;
