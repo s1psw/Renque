@@ -27,11 +27,11 @@
         <h1 class="post-header__title">{{ post.title }}</h1>
 
         <div class="post-header__meta">
-          <time :datetime="post.date">📅 {{ post.date }}</time>
+          <time :datetime="post.date"> {{ post.date }}</time>
           <span class="meta-sep">·</span>
-          <span>👤 星澜</span>
+          <span>Renque</span>
           <span class="meta-sep">·</span>
-          <span>⏱️ 约 {{ readingTime }} 分钟阅读</span>
+          <span>约 {{ readingTime }} 分钟阅读</span>
         </div>
 
         <!-- 标签 -->

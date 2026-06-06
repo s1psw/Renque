@@ -1,9 +1,11 @@
 <template>
-  <!-- 页面加载动画 -->
   <transition name="loader-fade">
     <div v-if="visible" class="loading-screen">
       <div class="loading-screen__inner">
-        <!-- 旋转文字 -->
+        <!-- 当前页面名称 -->
+        <p class="loading-screen__page">{{ pageName }}</p>
+
+        <!-- 轮换文字 -->
         <div class="loading-screen__text-wrapper">
           <transition name="text-swap" mode="out-in">
             <p :key="currentPhrase" class="loading-screen__text">
@@ -38,7 +40,17 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, watch, onUnmounted } from 'vue'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+
+const pageNames = {
+  '/': 'Home',
+  '/blog': 'Blog',
+  '/journey': 'Journey',
+  '/about': 'About'
+}
 
 const phrases = [
   '桜が舞い降りる…',
@@ -55,63 +67,78 @@ const visible = ref(true)
 const progress = ref(0)
 const currentPhrase = ref(phrases[0])
 const dotIndex = ref(0)
+const pageName = ref('')
 
 let phraseTimer = null
 let dotTimer = null
 let progressTimer = null
+let completeTimer = null
 
-// 模拟加载进度
-function startProgress() {
+function startProgress(duration = 1800) {
+  reset()
+
+  pageName.value = pageNames[router.currentRoute.value.path] || ''
+  visible.value = true
+  progress.value = 0
+  currentPhrase.value = phrases[Math.floor(Math.random() * phrases.length)]
+  dotIndex.value = 0
+
+  // 进度条 - 在 duration 时间内填满
+  const steps = 30
+  const interval = duration / steps
+  let step = 0
   progressTimer = setInterval(() => {
-    if (progress.value < 90) {
-      // 模拟真实加载：先快后慢
-      const increment = Math.max(1, Math.floor((90 - progress.value) / 8))
-      progress.value += increment
+    step++
+    // 缓出效果
+    const p = step / steps
+    progress.value = Math.floor(p * 100)
+    if (step >= steps) {
+      clearInterval(progressTimer)
+      complete()
     }
-  }, 200)
+  }, interval)
 
   // 轮换文字
   phraseTimer = setInterval(() => {
     const next = phrases[Math.floor(Math.random() * phrases.length)]
     currentPhrase.value = next !== currentPhrase.value ? next : phrases[0]
-  }, 1800)
+  }, 800)
 
-  // 底部点动画
+  // 底部点
   dotTimer = setInterval(() => {
     dotIndex.value = (dotIndex.value + 1) % 3
-  }, 400)
+  }, 350)
 }
 
 function complete() {
   clearInterval(progressTimer)
   clearInterval(phraseTimer)
   clearInterval(dotTimer)
-
   progress.value = 100
 
-  setTimeout(() => {
+  completeTimer = setTimeout(() => {
     visible.value = false
-  }, 500)
+  }, 400)
 }
 
-onMounted(() => {
-  startProgress()
-
-  // 页面完全加载后结束
-  window.addEventListener('load', () => {
-    setTimeout(complete, 400)
-  })
-
-  // 兜底：最多 4 秒
-  setTimeout(() => {
-    if (visible.value) complete()
-  }, 4000)
-})
-
-onUnmounted(() => {
+function reset() {
   clearInterval(progressTimer)
   clearInterval(phraseTimer)
   clearInterval(dotTimer)
+  clearTimeout(completeTimer)
+}
+
+// 初始加载 — 稍长
+startProgress(2200)
+
+// 路由切换 — 短暂加载
+watch(() => router.currentRoute.value.path, () => {
+  if (visible.value) return
+  startProgress(1200)
+})
+
+onUnmounted(() => {
+  reset()
 })
 </script>
 
@@ -130,13 +157,25 @@ onUnmounted(() => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 28px;
+  gap: 24px;
   min-width: 280px;
+}
+
+/* ---- 页面名 ---- */
+.loading-screen__page {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: var(--text-muted);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin: 0;
+  opacity: 0.6;
 }
 
 /* ---- 文字 ---- */
 .loading-screen__text-wrapper {
-  height: 40px;
+  height: 36px;
   display: flex;
   align-items: center;
 }
@@ -165,11 +204,9 @@ onUnmounted(() => {
   height: 100%;
   background: linear-gradient(90deg, var(--accent-start), var(--accent-end));
   border-radius: 1px;
-  transition: width 0.3s ease;
   position: relative;
 }
 
-/* 进度条末端发光 */
 .loading-screen__bar-fill::after {
   content: '';
   position: absolute;
@@ -192,7 +229,7 @@ onUnmounted(() => {
   letter-spacing: 0.05em;
 }
 
-/* ---- 底部装饰点 ---- */
+/* ---- 底部点 ---- */
 .loading-screen__dots {
   display: flex;
   gap: 8px;
@@ -212,55 +249,30 @@ onUnmounted(() => {
   transform: scale(1.3);
 }
 
-/* ---- 文字切换动画 ---- */
-.text-swap-enter-active {
-  animation: textIn 0.4s ease-out;
-}
-
-.text-swap-leave-active {
-  animation: textOut 0.25s ease-in;
-}
+/* 文字切换 */
+.text-swap-enter-active { animation: textIn 0.35s ease-out; }
+.text-swap-leave-active { animation: textOut 0.2s ease-in; }
 
 @keyframes textIn {
-  from {
-    opacity: 0;
-    transform: translateY(12px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
-
 @keyframes textOut {
-  from {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  to {
-    opacity: 0;
-    transform: translateY(-8px);
-  }
+  from { opacity: 1; transform: translateY(0); }
+  to   { opacity: 0; transform: translateY(-8px); }
 }
 
-/* ---- 整体淡出 ---- */
+/* 整体淡出 */
 .loader-fade-leave-active {
-  transition: opacity 0.6s ease, transform 0.6s ease;
+  transition: opacity 0.5s ease, transform 0.5s ease;
 }
-
 .loader-fade-leave-to {
   opacity: 0;
   transform: scale(1.02);
 }
 
-/* 响应式 */
 @media (max-width: 768px) {
-  .loading-screen__bar-track {
-    width: 200px;
-  }
-
-  .loading-screen__text {
-    font-size: 1rem;
-  }
+  .loading-screen__bar-track { width: 200px; }
+  .loading-screen__text { font-size: 1rem; }
 }
 </style>

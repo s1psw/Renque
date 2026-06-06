@@ -16,6 +16,9 @@
         <router-link to="/blog" class="navbar__link" active-class="navbar__link--active">
            文章
         </router-link>
+        <router-link to="/journey" class="navbar__link" active-class="navbar__link--active">
+           见闻
+        </router-link>
         <router-link to="/about" class="navbar__link" active-class="navbar__link--active">
            关于
         </router-link>
@@ -38,6 +41,7 @@
       <nav v-if="menuOpen" class="navbar__mobile">
         <router-link to="/" class="navbar__mobile-link" @click="menuOpen = false">🏠 首页</router-link>
         <router-link to="/blog" class="navbar__mobile-link" @click="menuOpen = false">📝 文章</router-link>
+        <router-link to="/journey" class="navbar__mobile-link" @click="menuOpen = false"> 见闻</router-link>
         <router-link to="/about" class="navbar__mobile-link" @click="menuOpen = false">👤 关于</router-link>
       </nav>
     </transition>

@@ -24,6 +24,13 @@ const routes = [
     meta: { title: ' Renque的个人博客' }
   },
   {
+    path: '/journey',
+    name: 'Journey',
+    // 见闻
+    component: () => import('@/views/Journey.vue'),
+    meta: { title: ' 见闻 | Renque的个人博客' }
+  },
+  {
     path: '/about',
     name: 'About',
     // 关于我
