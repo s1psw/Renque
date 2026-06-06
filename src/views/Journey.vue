@@ -8,10 +8,30 @@
       </div>
     </section>
 
+    <!-- Tag 筛选 -->
+    <div class="filter-bar container">
+      <button
+        class="filter-btn"
+        :class="{ 'filter-btn--active': activeTag === '全部' }"
+        @click="activeTag = '全部'"
+      >全部</button>
+      <button
+        v-for="tag in allTags"
+        :key="tag"
+        class="filter-btn"
+        :class="{ 'filter-btn--active': activeTag === tag }"
+        @click="activeTag = tag"
+      >{{ tag }}</button>
+    </div>
+
+    <p class="filter-count container">
+      共 <span class="gradient-text">{{ filteredItems.length }}</span> 条见闻
+    </p>
+
     <!-- 图片主导的瀑布流 -->
     <section class="journey-grid container">
       <article
-        v-for="(item, index) in items"
+        v-for="(item, index) in filteredItems"
         :key="index"
         class="journal-card"
         :class="{ 'journal-card--tall': index % 3 === 1 }"
@@ -38,9 +58,13 @@
           <h3 class="journal-card__title">{{ item.title }}</h3>
           <p class="journal-card__text">{{ item.content }}</p>
 
-          <!-- 地点/标签 -->
+          <!-- 地点 -->
           <div v-if="item.location" class="journal-card__location">
             {{ item.location }}
+          </div>
+          <!-- Tags -->
+          <div v-if="item.tags" class="journal-card__tags">
+            <span v-for="t in item.tags" :key="t" class="journal-card__tag">{{ t }}</span>
           </div>
         </div>
       </article>
@@ -55,7 +79,9 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
+
+const activeTag = ref('全部')
 
 const items = ref([
   {
@@ -63,30 +89,39 @@ const items = ref([
     date: '2026.06.06',
     content: '樱花飘落、旋转唱片、日系配色——从今天开始，这里就是我的数字花园。',
     image: '',
-    location: ' 家中'
+    location: ' 家中',
+    tags: ['博客', '日常']
   },
   {
     title: '夏天的第一场雨',
     date: '2026.06.05',
     content: '窗外突然下起了大雨，空气里弥漫着泥土的清香。泡了杯热茶，听着雨声写代码。',
     image: '',
-    location: ' 窗边'
+    location: ' 窗边',
+    tags: ['日常', '天气']
   },
   {
     title: '找到了很棒的BGM',
     date: '2026.06.04',
     content: '旋律温柔得像春日午后的阳光，已设为博客背景音乐。',
     image: '',
-    location: ' 网易云音乐'
-  },
-  {
-    title: '发现了宝藏咖啡馆',
-    date: '2026.06.03',
-    content: '猫咪很亲人，坐在窗边写代码，偶尔摸摸猫，效率反而更高了。',
-    image: '',
-    location: '☕ 猫咪咖啡馆'
+    location: ' 网易云音乐',
+    tags: ['音乐']
   }
 ])
+
+// 所有 tag
+const allTags = computed(() => {
+  const set = new Set()
+  items.value.forEach(i => (i.tags || []).forEach(t => set.add(t)))
+  return [...set]
+})
+
+// 按 tag 筛选
+const filteredItems = computed(() => {
+  if (activeTag.value === '全部') return items.value
+  return items.value.filter(i => (i.tags || []).includes(activeTag.value))
+})
 </script>
 
 <style scoped>
@@ -224,6 +259,59 @@ const items = ref([
   font-size: 0.8rem;
   color: var(--accent-start);
   font-weight: 500;
+}
+
+/* ---- 筛选栏 ---- */
+.filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  margin-bottom: 16px;
+  max-width: 900px;
+}
+.filter-btn {
+  padding: 6px 18px;
+  border-radius: 50px;
+  border: 1px solid rgba(180, 150, 200, 0.3);
+  background: rgba(255, 255, 255, 0.3);
+  color: var(--text-secondary);
+  font-family: inherit;
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+.filter-btn:hover {
+  border-color: var(--accent-start);
+  color: var(--accent-start);
+}
+.filter-btn--active {
+  background: linear-gradient(135deg, rgba(255, 133, 162, 0.18), rgba(167, 139, 250, 0.15));
+  border-color: rgba(255, 133, 162, 0.35);
+  color: var(--accent-start);
+  font-weight: 600;
+}
+.filter-count {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  margin-bottom: 24px;
+}
+
+/* ---- 卡片 tag ---- */
+.journal-card__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+.journal-card__tag {
+  font-size: 0.72rem;
+  padding: 2px 10px;
+  border-radius: 10px;
+  background: rgba(255, 133, 162, 0.08);
+  color: var(--accent-start);
 }
 
 /* ---- 空状态 ---- */

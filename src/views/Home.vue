@@ -78,7 +78,7 @@
         </div>
         <div class="stats__item glass-card">
           <span class="stats__number gradient-text">100+</span>
-          <span class="stats__label">杯咖啡 ☕</span>
+          <span class="stats__label">杯咖啡 </span>
         </div>
       </div>
     </section>

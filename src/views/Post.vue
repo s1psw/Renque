@@ -3,7 +3,7 @@
     <!-- 文章加载失败 -->
     <div v-if="!post" class="not-found container">
       <div class="not-found__card glass-card">
-        <span class="not-found__icon">😕</span>
+        <span class="not-found__icon"></span>
         <h2>文章未找到</h2>
         <p>你访问的文章可能不存在或已被移除。</p>
         <router-link to="/blog" class="btn-gradient">← 返回文章列表</router-link>
@@ -17,7 +17,7 @@
         <!-- 樱花装饰 -->
         <div class="post-header__sakura-left">🌸</div>
         <div class="post-header__sakura-right">🌸</div>
-        <div class="post-header__sparkle">✨</div>
+        
 
         <router-link to="/blog" class="post-header__back">
           ← 返回列表
