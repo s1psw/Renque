@@ -119,7 +119,7 @@
 
       <!-- 申请友链 -->
       <div class="friends__apply">
-        <p>💌 想交换友链？<a href="mailto:3284729638@qq.com">发邮件给我</a>~</p>
+        <p> 想交换友链？<a href="mailto:3284729638@qq.com">发邮件给我</a>~</p>
       </div>
     </section>
 
@@ -132,16 +132,16 @@ import { ref } from 'vue'
 // 友链数据（avatar 填图片 URL，留空则显示默认图标）
 const friends = ref([
   {
+    name: 'Bangumi番组计划',
+    url: 'https://bgm.tv/',
+    avatar: 'https://ts4.tc.mm.bing.net/th/id/OIP-C.IKJFJOWeVG-W4dxF7c5pwwAAAA?r=0&rs=1&pid=ImgDetMain&o=7&rm=3',
+    desc: 'ACG爱好者聚集地'
+  },
+  {
     name: 'Vue.js 官网',
     url: 'https://cn.vuejs.org/',
     avatar: 'https://cn.vuejs.org/images/logo.png',
     desc: '渐进式 JavaScript 框架'
-  },
-  {
-    name: 'Vite 官网',
-    url: 'https://cn.vitejs.dev/',
-    avatar: 'https://cn.vitejs.dev/logo.svg',
-    desc: '下一代前端构建工具'
   },
   {
     name: 'GitHub',
@@ -153,14 +153,12 @@ const friends = ref([
 
 // 技能数据
 const skills = ref([
-  { name: 'Vue.js', icon: '💚', level: 92 },
-  { name: 'JavaScript', icon: '🟨', level: 88 },
-  { name: 'CSS / SCSS', icon: '🎨', level: 85 },
-  { name: 'Node.js', icon: '🟢', level: 78 },
-  { name: 'TypeScript', icon: '🔷', level: 72 },
-  { name: 'Python', icon: '🐍', level: 65 },
-  { name: 'Git / DevOps', icon: '🔧', level: 80 },
-  { name: 'UI/UX 设计', icon: '✏️', level: 60 }
+  { name: 'Vue3', level: 92 },
+  { name: 'Node.js', level: 78 },
+  { name: 'Spring Boot', level: 65 },
+  { name: 'JavaScript', level: 80 },
+  { name: 'Gis数据处理', level: 60 },
+  { name: 'webgis', level: 40 }
 ])
 
 // 经历时间线

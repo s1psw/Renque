@@ -28,7 +28,7 @@
       <div class="footer__social">
         <h4 class="footer__heading">找到我</h4>
         <div class="footer__social-links">
-          <a href="https://github.com" target="_blank" rel="noopener" class="footer__social-link" title="GitHub">
+          <a href="https://github.com/s1psw/" target="_blank" rel="noopener" class="footer__social-link" title="GitHub">
             GitHub
           </a>
           
