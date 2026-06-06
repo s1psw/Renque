@@ -1,7 +1,11 @@
 {
   "permissions": {
     "allow": [
-      "Bash(node -e ' *)"
+      "Bash(node -e ' *)",
+      "Bash(cp c:/Users/yuki/personal-blog/img/*.jpg c:/Users/yuki/personal-blog/public/img/ && ls c:/Users/yuki/personal-blog/public/img/)"
+    ],
+    "additionalDirectories": [
+      "c:\\Users\\yuki\\personal-blog\\img"
     ]
   }
 }
