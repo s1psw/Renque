@@ -19,19 +19,19 @@
 
         <div class="about-intro__info">
           <h2>认却 <span class="gradient-text">Renque</span></h2>
-          <p class="about-intro__role">全栈开发 · 技术博主 · 开源爱好者</p>
+          <p class="about-intro__role">动画爱好者 · 学生 · 开发学习者</p>
           <p class="about-intro__bio">
-            拥有 5 年以上 Web 开发经验，专注于 Vue.js 生态与前端工程化。
+            拥有 0 年以上 Web 开发经验，专注于 Vue.js 生态与前端工程化。
             热衷于将复杂的技术概念转化为通俗易懂的文字，帮助更多开发者成长。
             
           </p>
 
           <!-- 社交按钮 -->
           <div class="about-intro__social">
-            <a href="https://github.com" target="_blank" rel="noopener" class="btn-outline">
+            <a href="https://github.com/s1psw" target="_blank" rel="noopener" class="btn-outline">
                GitHub
             </a>
-            <a href="mailto:hello@example.com" class="btn-outline">
+            <a href="mailto:hello@3284729638@qq.com" class="btn-outline">
                联系我
             </a>
           </div>
@@ -41,7 +41,7 @@
 
     <!-- 技能区 -->
     <section class="skills container">
-      <h2 class="section-title">🛠️ 技术栈</h2>
+      <h2 class="section-title"> 技术</h2>
       <div class="divider"></div>
 
       <div class="skills__grid">
@@ -68,7 +68,7 @@
 
     <!-- 经历时间线 -->
     <section class="timeline container">
-      <h2 class="section-title">📅 经历</h2>
+      <h2 class="section-title"> 经历</h2>
       <div class="divider"></div>
 
       <div class="timeline__list">
@@ -93,7 +93,7 @@
 
     <!-- 友链 -->
     <section class="friends container">
-      <h2 class="section-title">🔗 朋友们</h2>
+      <h2 class="section-title"> 友链</h2>
       <div class="divider"></div>
       <p class="friends__desc">一些有趣的人和网站，欢迎交换友链~</p>
 
@@ -106,7 +106,10 @@
           rel="noopener"
           class="friend-card glass-card"
         >
-          <span class="friend-card__avatar">{{ friend.avatar }}</span>
+          <div class="friend-card__avatar">
+            <img v-if="friend.avatar" :src="friend.avatar" :alt="friend.name" class="friend-card__avatar-img" />
+            <span v-else class="friend-card__avatar-emoji">🔗</span>
+          </div>
           <div class="friend-card__info">
             <span class="friend-card__name">{{ friend.name }}</span>
             <span class="friend-card__desc">{{ friend.desc }}</span>
@@ -126,24 +129,24 @@
 <script setup>
 import { ref } from 'vue'
 
-// 友链数据
+// 友链数据（avatar 填图片 URL，留空则显示默认图标）
 const friends = ref([
   {
     name: 'Vue.js 官网',
     url: 'https://cn.vuejs.org/',
-    avatar: '💚',
+    avatar: 'https://cn.vuejs.org/images/logo.png',
     desc: '渐进式 JavaScript 框架'
   },
   {
     name: 'Vite 官网',
     url: 'https://cn.vitejs.dev/',
-    avatar: '⚡',
+    avatar: 'https://cn.vitejs.dev/logo.svg',
     desc: '下一代前端构建工具'
   },
   {
     name: 'GitHub',
     url: 'https://github.com/s1psw',
-    avatar: '🐙',
+    avatar: 'https://github.githubassets.com/favicons/favicon-dark.svg',
     desc: '我的 GitHub 主页'
   }
 ])
@@ -165,8 +168,8 @@ const timeline = ref([
   {
     period: '2024 - 至今',
     title: '大学生',
-    org: '某科技公司',
-    description: '负责核心产品前端架构设计与技术选型，推动 Vue 3 迁移，搭建组件库与设计系统。'
+    org: '哈尔滨某大学',
+    description: '苦逼学习中。。'
   }
 ])
 </script>
@@ -423,15 +426,25 @@ const timeline = ref([
 }
 
 .friend-card__avatar {
-  font-size: 2rem;
   flex-shrink: 0;
   width: 48px;
   height: 48px;
+  border-radius: 50%;
+  overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 50%;
   background: linear-gradient(135deg, rgba(255, 133, 162, 0.15), rgba(167, 139, 250, 0.12));
+}
+
+.friend-card__avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.friend-card__avatar-emoji {
+  font-size: 1.5rem;
 }
 
 .friend-card__info {
