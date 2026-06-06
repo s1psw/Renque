@@ -116,81 +116,15 @@
 
       <!-- 申请友链 -->
       <div class="friends__apply">
-        <p>💌 想交换友链？<a href="mailto:3284729638@qq.com">发邮件给我</a> 或者在评论区留言~</p>
+        <p>💌 想交换友链？<a href="mailto:3284729638@qq.com">发邮件给我</a>~</p>
       </div>
     </section>
 
-    <!-- 评论区 -->
-    <section class="comments container">
-      <h2 class="section-title">💬 留言板</h2>
-      <div class="divider"></div>
-      <p class="comments__desc">有什么想说的就在这里留言吧~</p>
-
-      <div class="comments__box glass-card">
-        <!-- 评论表单 -->
-        <form class="comments__form" @submit.prevent="addComment">
-          <div class="comments__form-row">
-            <input
-              v-model="newComment.name"
-              type="text"
-              placeholder="你的昵称"
-              required
-              class="comments__input"
-              maxlength="20"
-            />
-            <input
-              v-model="newComment.email"
-              type="email"
-              placeholder="邮箱（选填，不会公开）"
-              class="comments__input"
-            />
-          </div>
-          <textarea
-            v-model="newComment.content"
-            placeholder="写下你想说的话……"
-            required
-            class="comments__textarea"
-            rows="3"
-            maxlength="500"
-          ></textarea>
-          <button type="submit" class="btn-gradient comments__submit">
-            ✨ 发表留言
-          </button>
-        </form>
-
-        <!-- 评论列表 -->
-        <div class="comments__list">
-          <div
-            v-for="(c, index) in comments"
-            :key="index"
-            class="comment-item"
-          >
-            <div class="comment-item__avatar">{{ c.name[0] }}</div>
-            <div class="comment-item__body">
-              <div class="comment-item__header">
-                <span class="comment-item__name">{{ c.name }}</span>
-                <span class="comment-item__time">{{ c.time }}</span>
-              </div>
-              <p class="comment-item__content">{{ c.content }}</p>
-            </div>
-          </div>
-
-          <!-- 空状态 -->
-          <p v-if="comments.length === 0" class="comments__empty">
-            还没有留言，来抢沙发吧~ ☕
-          </p>
-        </div>
-      </div>
-    </section>
   </div>
 </template>
 
 <script setup>
 import { ref } from 'vue'
-
-// 当前时间
-const now = new Date()
-const timeStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`
 
 // 友链数据
 const friends = ref([
@@ -214,33 +148,6 @@ const friends = ref([
   }
 ])
 
-// 评论列表
-const comments = ref([
-  {
-    name: 'Renque',
-    content: '欢迎来到我的博客！这里是留言板，有什么想说的都可以写下来~',
-    time: timeStr
-  }
-])
-
-// 新评论表单
-const newComment = ref({
-  name: '',
-  email: '',
-  content: ''
-})
-
-function addComment() {
-  if (!newComment.value.name.trim() || !newComment.value.content.trim()) return
-  const now = new Date()
-  comments.value.unshift({
-    name: newComment.value.name.trim(),
-    content: newComment.value.content.trim(),
-    time: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`
-  })
-  newComment.value = { name: '', email: '', content: '' }
-}
-
 // 技能数据
 const skills = ref([
   { name: 'Vue.js', icon: '💚', level: 92 },
@@ -257,27 +164,9 @@ const skills = ref([
 const timeline = ref([
   {
     period: '2024 - 至今',
-    title: '高级前端工程师',
+    title: '大学生',
     org: '某科技公司',
     description: '负责核心产品前端架构设计与技术选型，推动 Vue 3 迁移，搭建组件库与设计系统。'
-  },
-  {
-    period: '2022 - 2024',
-    title: '全栈开发工程师',
-    org: '某互联网公司',
-    description: '参与多个全栈项目的开发与维护，使用 Vue.js + Node.js 技术栈，负责从前端到后端的完整交付。'
-  },
-  {
-    period: '2020 - 2022',
-    title: '前端开发工程师',
-    org: '某创业公司',
-    description: '作为早期成员加入团队，从零搭建前端项目，积累了丰富的实战经验与快速迭代能力。'
-  },
-  {
-    period: '2016 - 2020',
-    title: '计算机科学 学士',
-    org: '某大学',
-    description: '主修计算机科学与技术，期间参与多个开源项目与校内竞赛，打下了扎实的计算机基础。'
   }
 ])
 </script>
@@ -572,147 +461,6 @@ const timeline = ref([
   font-weight: 500;
 }
 
-/* ---- 评论区 ---- */
-.comments {
-  padding-bottom: var(--section-gap);
-}
-
-.comments__desc {
-  text-align: center;
-  color: var(--text-muted);
-  font-size: 0.9rem;
-  margin-bottom: 28px;
-}
-
-.comments__box {
-  max-width: 700px;
-  margin: 0 auto;
-  padding: 28px !important;
-  cursor: default !important;
-}
-
-.comments__box:hover {
-  transform: none !important;
-  box-shadow: var(--shadow-card) !important;
-}
-
-/* 评论表单 */
-.comments__form {
-  margin-bottom: 32px;
-  padding-bottom: 28px;
-  border-bottom: 1px solid rgba(180, 150, 200, 0.2);
-}
-
-.comments__form-row {
-  display: flex;
-  gap: 12px;
-  margin-bottom: 14px;
-}
-
-.comments__input {
-  flex: 1;
-  padding: 10px 16px;
-  border: 1px solid rgba(180, 150, 200, 0.3);
-  border-radius: 12px;
-  font-family: inherit;
-  font-size: 0.9rem;
-  color: var(--text-primary);
-  background: rgba(255, 255, 255, 0.5);
-  outline: none;
-  transition: border-color 0.2s;
-}
-
-.comments__input:focus {
-  border-color: var(--accent-start);
-}
-
-.comments__textarea {
-  width: 100%;
-  padding: 12px 16px;
-  border: 1px solid rgba(180, 150, 200, 0.3);
-  border-radius: 12px;
-  font-family: inherit;
-  font-size: 0.9rem;
-  color: var(--text-primary);
-  background: rgba(255, 255, 255, 0.5);
-  outline: none;
-  resize: vertical;
-  margin-bottom: 14px;
-  transition: border-color 0.2s;
-}
-
-.comments__textarea:focus {
-  border-color: var(--accent-start);
-}
-
-.comments__submit {
-  font-size: 0.9rem;
-  padding: 10px 32px;
-}
-
-/* 评论列表 */
-.comments__list {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.comment-item {
-  display: flex;
-  gap: 14px;
-}
-
-.comment-item__avatar {
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--accent-start), var(--accent-end));
-  color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 700;
-  font-size: 0.9rem;
-  flex-shrink: 0;
-}
-
-.comment-item__body {
-  flex: 1;
-  min-width: 0;
-}
-
-.comment-item__header {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 4px;
-}
-
-.comment-item__name {
-  font-weight: 600;
-  font-size: 0.9rem;
-  color: var(--text-primary);
-}
-
-.comment-item__time {
-  font-size: 0.78rem;
-  color: var(--text-muted);
-}
-
-.comment-item__content {
-  color: var(--text-secondary);
-  font-size: 0.9rem;
-  line-height: 1.7;
-  word-break: break-word;
-}
-
-.comments__empty {
-  text-align: center;
-  color: var(--text-muted);
-  font-size: 0.9rem;
-  padding: 20px 0;
-}
-
 /* 响应式 */
 @media (max-width: 768px) {
   .about-intro__card {
@@ -734,14 +482,6 @@ const timeline = ref([
 
   .friends__grid {
     grid-template-columns: 1fr;
-  }
-
-  .comments__form-row {
-    flex-direction: column;
-  }
-
-  .comments__box {
-    padding: 20px !important;
   }
 }
 </style>
