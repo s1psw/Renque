@@ -236,12 +236,40 @@ onUnmounted(() => {
 
 @media (max-width: 768px) {
   .music-player {
-    bottom: 20px;
-    left: 20px;
+    bottom: 80px;
+    right: 16px;
+    left: auto;
+    z-index: 940;
   }
+
   .cover-disc {
-    width: 64px;
-    height: 64px;
+    width: 56px;
+    height: 56px;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .cover-disc:hover {
+    box-shadow:
+      0 0 0 3px rgba(255, 255, 255, 0.45),
+      0 4px 28px rgba(154, 117, 178, 0.25);
+  }
+
+  .tonearm {
+    top: -14px;
+    right: -1px;
+    width: 28px;
+    height: 3px;
+  }
+
+  .tonearm::after {
+    right: -4px;
+    top: -2px;
+    width: 8px;
+    height: 8px;
+  }
+
+  .cover-disc__glow-ring {
+    border-width: 1.5px;
   }
 }
 </style>
