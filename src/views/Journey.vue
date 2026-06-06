@@ -40,7 +40,7 @@
           :style="{ animationDelay: `${(index % 8) * 0.1}s` }"
         >
           <div class="journal-card__image">
-            <img v-if="item.image" :src="item.image" :alt="item.title" loading="lazy" />
+            <img v-if="item.image" :src="baseUrl + item.image" :alt="item.title" loading="lazy" />
             <div v-else class="journal-card__placeholder"><span class="journal-card__placeholder-icon"></span></div>
             <span class="journal-card__date-tag">{{ item.date }}</span>
           </div>
@@ -63,7 +63,7 @@
           :style="{ animationDelay: `${(index % 8) * 0.1 + 0.05}s` }"
         >
           <div class="journal-card__image">
-            <img v-if="item.image" :src="item.image" :alt="item.title" loading="lazy" />
+            <img v-if="item.image" :src="baseUrl + item.image" :alt="item.title" loading="lazy" />
             <div v-else class="journal-card__placeholder"><span class="journal-card__placeholder-icon"></span></div>
             <span class="journal-card__date-tag">{{ item.date }}</span>
           </div>
@@ -124,6 +124,7 @@
 <script setup>
 import { ref, computed } from 'vue'
 
+const baseUrl = import.meta.env.BASE_URL
 const PAGE_SIZE = 8
 const activeTag = ref('全部')
 const currentPage = ref(1)
@@ -132,119 +133,119 @@ const items = ref([
   {
     date: '2026.05.30',
     title: '晚上一口气追完剧场版，不错',
-    image: '/img/4.jpg',
+    image: 'img/4.jpg',
     location: ' 佐贺偶像是传奇',
     tags: ['ACG']
   },
    {
     date: '2025.11.29',
     title: '8h推完，茉子可爱',
-    image: '/img/11.jpg',
+    image: 'img/11.jpg',
     location: ' 千恋万花',
     tags: ['ACG']
   },
    {
     date: '2025.12.10',
     title: '嘿嘿',
-    image: '/img/12.jpg',
+    image: 'img/12.jpg',
     location: ' 近月少女的礼仪',
     tags: ['ACG']
   },
   {
     date: '2026.05.01',
     title: '大连旅游。',
-    image: '/img/2.jpg',
+    image: 'img/2.jpg',
     location: ' 大连',
     tags: ['旅游']
   },
     {
     date: '2025.10.02',
     title: '冰雪大世界',
-    image: '/img/13.jpg',
+    image: 'img/13.jpg',
     location: ' 哈尔滨',
     tags: ['旅游']
   },
   {
     date: '2026.03.26',
     title: '藤本树太不是人了，，，',
-    image: '/img/3.jpg',
+    image: 'img/3.jpg',
     location: ' 炎拳',
     tags: ['ACG']
   },
     {
     date: '2025.12.09',
     title: '午休时间追完，喜欢',
-    image: '/img/17.jpg',
+    image: 'img/17.jpg',
     location: ' 电锯人',
     tags: ['ACG']
   },
   {
     date: '2026.03.06',
     title: '玩到了新游戏，艾米莉可爱，生9好玩',
-    image: '/img/1.jpg',
+    image: 'img/1.jpg',
     location: ' 生化危机9',
     tags: ['游戏']
   },
    {
     date: '2025.10.05',
     title: '神作',
-    image: '/img/14.jpg',
+    image: 'img/14.jpg',
     location: '最后生还者',
     tags: ['游戏']
   },
     {
     date: '2025.12.01',
     title: '大家一起',
-    image: '/img/16.jpg',
+    image: 'img/16.jpg',
     location: 'VRC',
     tags: ['游戏']
   },
   {
     date: '2026.02.28',
     title: '来BLG基地参观。',
-    image: '/img/6.jpg',
+    image: 'img/6.jpg',
     location: ' BLG',
     tags: ['旅游']
   },
   {
     date: '2026.02.28',
     title: '上海赏樱',
-    image: '/img/7.jpg',
+    image: 'img/7.jpg',
     location: ' 上海',
     tags: ['旅游']
   },
   {
     date: '2026.02.21',
     title: '来看新年电影',
-    image: '/img/9.jpg',
+    image: 'img/9.jpg',
     location: ' 家',
     tags: ['日常']
   },
     {
     date: '2026.02.21',
     title: '第一次和家人看看水族馆',
-    image: '/img/15.jpg',
+    image: 'img/15.jpg',
     location: ' 水族馆',
     tags: ['日常']
   },
    {
     date: '2025.09.27',
     title: '来凑凑热闹',
-    image: '/img/10.jpg',
+    image: 'img/10.jpg',
     location: ' 国际文化节',
     tags: ['日常']
   },
   {
     date: '2026.02.07',
     title: '鸣潮3.1太强了，新的高峰',
-    image: '/img/5.jpg',
+    image: 'img/5.jpg',
     location: ' 鸣潮',
     tags: ['游戏']
   },
   {
     date: '2026.01.04',
     title: '看夜上海',
-    image: '/img/8.jpg',
+    image: 'img/8.jpg',
     location: ' 上海',
     tags: ['旅游']
   }
