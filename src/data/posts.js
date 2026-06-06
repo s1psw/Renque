@@ -281,6 +281,103 @@ el.animate([
     date: '2025-07-22',
     category: '技术思考',
     tags: ['工具', '效率', '开发环境']
+  },
+  {
+    id: '6',
+    title: '给博客添加樱花飘落效果 —— 纯 CSS + Vue 实现',
+    excerpt: '手把手教你用纯 CSS 关键帧动画配合 Vue 组件，为网页添加浪漫的日式樱花花瓣飘落特效，每片花瓣都有独立的运动轨迹。',
+    content: `## 效果预览
+
+进入本博客主页，你会看到数十片粉色的樱花花瓣在背景中缓缓飘落——每片花瓣的下落速度、水平漂移、大小、透明度都各不相同，营造出自然浪漫的日式动漫氛围。
+
+## 核心思路
+
+整个效果分成两层：
+
+1. **CSS 关键帧动画** — 定义花瓣从顶部飘落到底部的运动轨迹
+2. **Vue 组件** — 用 JavaScript 随机生成多片花瓣，每片独立参数
+
+## CSS 动画
+
+核心是一个 \`@keyframes\` 动画，让花瓣从视口顶部飘到底部：
+
+\`\`\`css
+@keyframes sakuraFall {
+  0% {
+    transform: translateY(-10vh) translateX(0) rotate(0deg);
+    opacity: 0;
+  }
+  5% {
+    opacity: var(--opacity, 0.18);
+  }
+  50% {
+    transform: translateY(45vh) translateX(calc(var(--drift, 40px) * 0.6)) rotate(calc(var(--rotation, 540deg) * 0.5));
+  }
+  100% {
+    transform: translateY(105vh) translateX(var(--drift, 80px)) rotate(var(--rotation, 720deg));
+    opacity: 0;
+  }
+}
+\`\`\`
+
+关键细节：
+- 使用 CSS 自定义属性（\`--drift\`、\`--rotation\`、\`--opacity\`）让每片花瓣参数不同
+- 水平漂移在 50% 处到达 60%，模拟花瓣随风摆动
+- 透明度在顶部和底部淡入淡出
+
+## Vue 组件
+
+用 \`computed\` 生成 50 片花瓣的随机参数：
+
+\`\`\`js
+const petalCount = 50
+
+function random(min, max) {
+  return min + Math.random() * (max - min)
+}
+
+const petals = computed(() => {
+  return Array.from({ length: petalCount }, (_, i) => ({
+    id: i,
+    style: {
+      left: \`\${random(0, 100)}%\`,
+      fontSize: \`\${random(14, 28)}px\`,
+      animationDuration: \`\${random(8, 22)}s\`,
+      animationDelay: \`\${random(-20, 0)}s\`,
+      opacity: random(0.10, 0.25),
+      '--drift': \`\${random(-80, 80)}px\`,
+      '--rotation': \`\${random(360, 1080)}deg\`,
+    }
+  }))
+})
+\`\`\`
+
+模板渲染每片花瓣：
+
+\`\`\`html
+<div class="sakura-container" aria-hidden="true">
+  <span
+    v-for="p in petals"
+    :key="p.id"
+    class="sakura-petal"
+    :style="p.style"
+  >🌸</span>
+</div>
+\`\`\`
+
+## 关键技巧
+
+- **负延迟**：\`animationDelay\` 设为负值，让花瓣从不同位置开始，避免"一行同时落下"的违和感
+- **固定定位**：容器使用 \`position: fixed; inset: 0\` 覆盖全屏
+- **\`pointer-events: none\`**：花瓣不阻挡任何页面交互
+- **\`aria-hidden="true"\`**：对屏幕阅读器隐藏装饰元素
+
+## 总结
+
+不到 80 行代码就能实现一个完整的樱花飘落系统。核心是理解 CSS 自定义属性如何与 JavaScript 生成的随机参数配合，让每片花瓣都拥有独一无二的运动轨迹。`,
+    date: '2026-06-06',
+    category: 'CSS 艺术',
+    tags: ['CSS', '动画', 'Vue.js', '樱花', '前端特效']
   }
 ]
 

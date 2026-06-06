@@ -1,55 +1,94 @@
 <template>
-  <!-- 音乐播放器：网易云 iframe 藏在唱片后面 -->
   <div class="music-player">
-    <!-- 唱片容器（包裹 iframe + 封面） -->
-    <div class="player-wrapper" @click="togglePlay">
-      <!-- 网易云 iframe 在底层，唱片挡住它 -->
-      <iframe
-        ref="iframeRef"
-        class="audio-iframe"
-        :src="iframeSrc"
-        frameborder="0"
-        allow="autoplay *"
-      ></iframe>
+    <!-- 本地音频 -->
+    <audio
+      ref="audioRef"
+      :src="`${baseUrl}music.mp3`"
+      loop
+      preload="auto"
+      autoplay
+      muted
+      playsinline
+      @play="onPlay"
+      @pause="onPause"
+    ></audio>
 
-      <!-- 封面唱片盖在 iframe 上面 -->
-      <div
-        class="cover-disc"
-        :class="{ 'cover-disc--spinning': isPlaying }"
-        :aria-label="isPlaying ? '暂停' : '播放'"
-        :title="isPlaying ? '点击暂停' : '点击播放'"
-      >
-        <img
-          :src="`${baseUrl}img/cover.png`"
-          class="cover-disc__img"
-          alt="专辑封面"
-        />
-        <div class="cover-disc__veil"></div>
-        <div class="cover-disc__glow-ring"></div>
-        <div class="tonearm" :class="{ 'tonearm--on': isPlaying }"></div>
-      </div>
-    </div>
+    <!-- 封面唱片 -->
+    <button
+      class="cover-disc"
+      :class="{ 'cover-disc--spinning': isPlaying }"
+      @click="togglePlay"
+      :aria-label="isPlaying ? '暂停' : '播放'"
+      :title="isPlaying ? '点击暂停' : '点击播放'"
+    >
+      <img
+        :src="`${baseUrl}img/cover.png`"
+        class="cover-disc__img"
+        alt="专辑封面"
+      />
+      <div class="cover-disc__veil"></div>
+      <div class="cover-disc__glow-ring"></div>
+      <div class="tonearm" :class="{ 'tonearm--on': isPlaying }"></div>
+    </button>
   </div>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 
 const baseUrl = import.meta.env.BASE_URL
-const SONG_ID = '399367379'
 
 const isPlaying = ref(true)
-const iframeRef = ref(null)
+const isMuted = ref(true)
+const audioRef = ref(null)
 
-const iframeSrc = computed(() =>
-  `https://music.163.com/outchain/player?type=2&id=${SONG_ID}&auto=${isPlaying.value ? 1 : 0}&height=66`
-)
+// 首次用户交互：取消静音
+function unmute() {
+  const a = audioRef.value
+  if (!a) return
+  a.muted = false
+  a.volume = 0.5
+  isMuted.value = false
+}
+
+onMounted(() => {
+  const a = audioRef.value
+  if (!a) return
+
+  // 静音自动播放（浏览器允许）
+  a.play().catch(() => {
+    isPlaying.value = false
+  })
+
+  // 用户首次点击/触摸 → 取消静音
+  document.addEventListener('click', unmute, { once: true })
+  document.addEventListener('touchstart', unmute, { once: true })
+})
+
+onUnmounted(() => {
+  document.removeEventListener('click', unmute)
+  document.removeEventListener('touchstart', unmute)
+})
+
+function onPlay() { isPlaying.value = true }
+function onPause() { isPlaying.value = false }
 
 function togglePlay() {
-  isPlaying.value = !isPlaying.value
-  // 强制刷新 iframe
-  if (iframeRef.value) {
-    iframeRef.value.src = iframeSrc.value
+  const a = audioRef.value
+  if (!a) return
+
+  if (isPlaying.value) {
+    a.pause()
+  } else {
+    // 用户点击有手势，直接有声播放
+    a.muted = false
+    a.volume = 0.5
+    isMuted.value = false
+    a.play().catch(() => {
+      // 仍然被阻就静音播放
+      a.muted = true
+      a.play().catch(() => { isPlaying.value = false })
+    })
   }
 }
 </script>
@@ -57,39 +96,19 @@ function togglePlay() {
 <style scoped>
 .music-player {
   position: fixed;
-  bottom: 30px;
+  bottom: 60px;
   left: 30px;
   z-index: 950;
 }
 
-/* 包装器：iframe 在底层，唱片盖在上面 */
-.player-wrapper {
+.cover-disc {
   position: relative;
   width: 120px;
-  height: 120px;
-  cursor: pointer;
-}
-
-/* iframe 挪到视口外保持渲染（不可 display:none/opacity:0 否则浏览器阻止） */
-.audio-iframe {
-  position: fixed;
-  top: -100px;
-  left: -400px;
-  width: 330px;
-  height: 86px;
-  z-index: 1;
-}
-
-/* ---- 封面唱片 ---- */
-.cover-disc {
-  position: absolute;
-  inset: 0;
   border-radius: 50%;
   border: none;
   padding: 0;
+  cursor: pointer;
   overflow: hidden;
-  z-index: 2;
-  pointer-events: none; /* 点击由 .player-wrapper 处理 */
   box-shadow:
     0 0 0 3px rgba(255, 255, 255, 0.45),
     0 4px 28px rgba(154, 117, 178, 0.25);
@@ -183,11 +202,7 @@ function togglePlay() {
     bottom: 20px;
     left: 20px;
   }
-  .player-wrapper {
-    width: 64px;
-    height: 64px;
-  }
-  .audio-iframe {
+  .cover-disc {
     width: 64px;
     height: 64px;
   }
