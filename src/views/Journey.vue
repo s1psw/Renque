@@ -37,7 +37,7 @@
           v-for="(item, index) in leftCol"
           :key="'L' + index"
           class="journal-card"
-          :style="{ animationDelay: `${(index % 8) * 0.1}s` }"
+          :style="{ animationDelay: `${(index % 7) * 0.1}s` }"
         >
           <div class="journal-card__image">
             <img v-if="item.image" :src="baseUrl + item.image" :alt="item.title" loading="lazy" />
@@ -60,7 +60,7 @@
           v-for="(item, index) in rightCol"
           :key="'R' + index"
           class="journal-card"
-          :style="{ animationDelay: `${(index % 8) * 0.1 + 0.05}s` }"
+          :style="{ animationDelay: `${(index % 7) * 0.1 + 0.05}s` }"
         >
           <div class="journal-card__image">
             <img v-if="item.image" :src="baseUrl + item.image" :alt="item.title" loading="lazy" />
@@ -226,6 +226,13 @@ const items = ref([
     title: '第一次和家人看看水族馆',
     image: 'img/15.jpg',
     location: ' 水族馆',
+    tags: ['日常']
+  },
+    {
+    date: '2026.03.05',
+    title: '网友送的bd到了，万分感谢！！！',
+    image: 'img/18.jpg',
+    location: '礼物',
     tags: ['日常']
   },
    {

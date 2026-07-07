@@ -148,7 +148,14 @@ const friends = ref([
     url: 'https://github.com/s1psw',
     avatar: 'https://github.githubassets.com/favicons/favicon-dark.svg',
     desc: '我的 GitHub 主页'
+  },
+  {
+    name: 'NNNullptr南',
+    url: 'https://www.xnmoe.com/friends.html',
+    avatar: 'https://www.xnmoe.com/assets/images/pfp.png',
+    desc: '数学生的古早拼贴风格网站'
   }
+
 ])
 
 // 技能数据
@@ -157,6 +164,7 @@ const skills = ref([
   { name: 'Node.js', level: 78 },
   { name: 'Spring Boot', level: 65 },
   { name: 'JavaScript', level: 80 },
+  { name: 'Arcgis', level: 85 },
   { name: 'Gis数据处理', level: 60 },
   { name: 'webgis', level: 40 }
 ])
