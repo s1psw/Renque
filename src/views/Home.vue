@@ -25,9 +25,9 @@
              浏览文章
           </router-link>
         <div @click="tranAbout" class="btn-outline">了解更多</div> 
-          <router-link to="/about" class="btn-outline">
+          <!-- <router-link to="/about" class="btn-outline">
              了解更多
-          </router-link>
+          </router-link> -->
         </div>
       </div>
 
@@ -92,12 +92,13 @@ import { posts, getCategories } from '@/data/posts.js'
 import BlogCard from '@/components/BlogCard.vue'
 
 import {useRouter} from 'vue-router'
-// import { onMounted } from 'vue'
-
 const router =useRouter()
 function tranAbout(){
   router.push('/about')
 }
+
+// import { onMounted } from 'vue'
+
 // onMounted(()=>{
 //   setTimeout(()=>{
 //     router.push('/blog')
