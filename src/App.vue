@@ -1,15 +1,6 @@
 <template>
   <!-- 根组件：全局布局框架 -->
   <div class="app-wrapper">
-    <!-- 页面加载动画 -->
-    <LoadingScreen />
-
-    <!-- 樱花花瓣飘落 -->
-    <SakuraPetals />
-
-    <!-- 顶部导航栏 -->
-    <NavBar />
-
     <!-- 主内容区（带路由过渡动画） -->
     <main class="main-content">
       <router-view v-slot="{ Component, route }">
@@ -18,7 +9,14 @@
         </transition>
       </router-view>
     </main>
+    <!-- 页面加载动画 -->
+    <LoadingScreen />
 
+    <!-- 樱花花瓣飘落 -->
+    <SakuraPetals />
+
+    <!-- 顶部导航栏 -->
+    <NavBar />
     <!-- 页脚 -->
     <Footer />
 

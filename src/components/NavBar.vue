@@ -3,16 +3,17 @@
   <header class="navbar" :class="{ 'navbar--scrolled': isScrolled }">
     <div class="navbar__inner container">
       <!-- Logo -->
-      <router-link to="/" class="navbar__logo">
+      <router-link to="/" active-class="navbar__logo">
         <span class="logo-icon">✦</span>
         <span class="logo-text gradient-text">Renque的个人博客</span>
       </router-link>
 
       <!-- 桌面端导航链接 -->
       <nav class="navbar__links">
-        <router-link to="/" class="navbar__link" exact-active-class="navbar__link--active">
+        <router-link :to="{path:'/',query:{}}" class="navbar__link" exact-active-class="navbar__link--active">
            首页
         </router-link>
+        <!-- <div @click="changeRouter"class="navbar__link" active-class="navbar__link--active">文章</div> -->
         <router-link to="/blog" class="navbar__link" active-class="navbar__link--active">
            文章
         </router-link>
@@ -50,11 +51,15 @@
 
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
-
+import {useRouter} from 'vue-router'
 // 滚动状态：滚动超过 50px 后加深导航栏背景
 const isScrolled = ref(false)
 const menuOpen = ref(false)
 
+const router =useRouter()
+function changeRouter(){
+  router.push('/blog')
+}
 function handleScroll() {
   isScrolled.value = window.scrollY > 50
 }

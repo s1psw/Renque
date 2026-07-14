@@ -1,12 +1,12 @@
 import { createRouter, createWebHistory } from 'vue-router'
-
+import Home from '@/views/Home.vue'
 // 定义路由
 const routes = [
   {
     path: '/',
     name: 'Home',
     // 首页：个人介绍 + 精选文章
-    component: () => import('@/views/Home.vue'),
+    component: Home,
     meta: { title: ' Renque的个人博客' }
   },
   {
@@ -56,7 +56,7 @@ const router = createRouter({
 
 // 全局后置守卫：更新页面标题
 router.afterEach((to) => {
-  document.title = to.meta.title || '星澜小栈 - 个人博客'
+  document.title = to.meta.title || ' 个人博客'
 })
 
 export default router

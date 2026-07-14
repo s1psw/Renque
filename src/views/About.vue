@@ -51,7 +51,6 @@
           class="skills__item glass-card"
         >
           <div class="skills__header">
-            <span class="skills__icon">{{ skill.icon }}</span>
             <span class="skills__name">{{ skill.name }}</span>
             <span class="skills__level">{{ skill.level }}%</span>
           </div>

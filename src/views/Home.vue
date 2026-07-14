@@ -24,6 +24,7 @@
           <router-link to="/blog" class="btn-gradient">
              浏览文章
           </router-link>
+        <div @click="tranAbout" class="btn-outline">了解更多</div> 
           <router-link to="/about" class="btn-outline">
              了解更多
           </router-link>
@@ -90,7 +91,18 @@ import { computed } from 'vue'
 import { posts, getCategories } from '@/data/posts.js'
 import BlogCard from '@/components/BlogCard.vue'
 
+import {useRouter} from 'vue-router'
+// import { onMounted } from 'vue'
 
+const router =useRouter()
+function tranAbout(){
+  router.push('/about')
+}
+// onMounted(()=>{
+//   setTimeout(()=>{
+//     router.push('/blog')
+//   }, 3000)
+// })
 // 精选文章：取最新的 3 篇
 const featuredPosts = computed(() => posts.slice(0, 3))
 
